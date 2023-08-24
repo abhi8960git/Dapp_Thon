@@ -9,7 +9,8 @@
     "esModuleInterop": true,
     "rootDir": "./src",
     // "noImplicitUseStrict": true,
-    "alwaysStrict": false
+    "alwaysStrict": false,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src", "node_modules/@types/script.d.ts"],
   "exclude": ["node_modules"]

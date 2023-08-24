@@ -7,8 +7,6 @@
 import * as THREE from "three";
 import * as ZapparThree from "@zappar/zappar-threejs";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { FlyControls } from "three/examples/jsm/controls/FlyControls";
 import Stats from "three/examples/jsm/libs/stats.module";
 
 const model = new URL("../assets/key_card.glb", import.meta.url).href;
@@ -26,9 +24,6 @@ if (ZapparThree.browserIncompatible()) {
   throw new Error("Unsupported browser");
 }
 
-// ZapparThree provides a LoadingManager that shows a progress bar while
-// the assets are downloaded. You can use this if it's helpful, or use
-// your own loading UI - it's up to you :-)
 const manager = new ZapparThree.LoadingManager();
 
 // ==================== Selectings dom elemets ====================
@@ -44,8 +39,6 @@ const renderer = new THREE.WebGLRenderer({
 const scene = new THREE.Scene();
 // document.body.appendChild(renderer.domElement);
 
-// As with a normal ThreeJS scene, resize the canvas if the window resizes
-
 // Create a Zappar camera that we'll use instead of a ThreeJS camera
 const camera = new ZapparThree.Camera();
 
@@ -58,11 +51,8 @@ ZapparThree.permissionRequestUI().then((granted) => {
   else ZapparThree.permissionDeniedUI();
 });
 
-// The Zappar component needs to know our WebGL context, so set it like this:
 ZapparThree.glContextSet(renderer.getContext());
 
-// Set the background of our scene to be the camera background texture
-// that's provided by the Zappar camera
 scene.background = camera.backgroundTexture;
 
 // Create an InstantWorldTracker and wrap it in an InstantWorldAnchorGroup for us
@@ -188,117 +178,6 @@ gltfLoader.load(
 
 // console.log(sceneMeshes);
 
-// ==================== Function to create a 3D Sphere ====================
-const CreateSphere = (x, y, z, color) => {
-  const sphereMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(0.1, 32, 32),
-    new THREE.MeshBasicMaterial({ color: color })
-  );
-  sphereMesh.scale.set(0.1, 0.1, 0.1);
-  sphereMesh.position.set(x, y, z);
-  instantTrackerGroup.add(sphereMesh);
-};
-
-// ===================== Logic for marking a boundary ======================
-CreateSphere(-0.125, 0.02, 0.02, "red");
-CreateSphere(
-  0.65 * Math.cos(Math.PI / 2) - 0.125,
-  0.09,
-  0.65 * Math.sin(Math.PI / 2) + 0.02,
-  "green"
-);
-CreateSphere(
-  0.68 * Math.cos(Math.PI * 1.8) - 0.125,
-  0.09,
-  0.68 * Math.sin(Math.PI * 1.8) + 0.02,
-  "green"
-);
-CreateSphere(
-  0.7 * Math.cos(Math.PI * 1.5) - 0.125,
-  0.09,
-  0.7 * Math.sin(Math.PI * 1.5) + 0.02,
-  "green"
-);
-
-// =====================  Sleep Function ======================
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-// =====================  Animation of TubeGeometry Function ======================
-async function animate(points, mesh) {
-  for (let i = 2; i < points.length; i++) {
-    let curve = new THREE.CatmullRomCurve3(points.slice(0, i));
-    mesh.geometry = new THREE.TubeGeometry(curve, 64, 0.007, 8, false);
-    await sleep(25);
-  }
-}
-
-// =====================  Function for creating a curve ======================
-const CreateCurve = (x, y, z, run) => {
-  let v1 = new THREE.Vector3(-0.125, 0.02, 0.02); // pos of batsman
-  let v2 = new THREE.Vector3(x, y, z); // endpoint of the ball
-  let points = [];
-  if (run == 6) {
-    for (let i = 0; i <= 50; i++) {
-      let p = new THREE.Vector3().lerpVectors(v1, v2, i / 50);
-
-      p.y = p.y + 0.2 * Math.sin((Math.PI * i) / 50);
-      points.push(p);
-    }
-    let curve = new THREE.CatmullRomCurve3(points.slice(0, 2));
-    const geometry = new THREE.TubeGeometry(curve, 64, 0.007, 8, false);
-    const material = new THREE.MeshBasicMaterial({ color: "red" });
-    const mesh = new THREE.Mesh(geometry, material);
-    instantTrackerGroup.add(mesh);
-    animate(points, mesh);
-  } else if (run == 4) {
-    for (let i = 0; i <= 50; i++) {
-      let p = new THREE.Vector3().lerpVectors(v1, v2, i / 50);
-      p.y = p.y + 0.01 * Math.sin((Math.PI * i) / 50);
-      points.push(p);
-    }
-    console.log(points);
-    let curve = new THREE.CatmullRomCurve3(points.slice(0, 2));
-    const geometry = new THREE.TubeGeometry(curve, 64, 0.007, 8, false);
-    const material = new THREE.MeshBasicMaterial({ color: "blue" });
-    const mesh = new THREE.Mesh(geometry, material);
-    instantTrackerGroup.add(mesh);
-    animate(points, mesh);
-  }
-};
-
-// =====================  Event Listeners and Calling the CreateCurve Function ======================
-button_six.addEventListener("click", () => {
-  CreateCurve(
-    0.65 * Math.cos(Math.PI / 2) - 0.125,
-    0.09,
-    0.65 * Math.sin(Math.PI / 2) + 0.02,
-    6
-  );
-  CreateCurve(
-    0.7 * Math.cos(Math.PI * 2.3) - 0.125,
-    0.09,
-    0.7 * Math.sin(Math.PI * 2.3) + 0.02,
-    6
-  );
-});
-
-button_four.addEventListener("click", () => {
-  CreateCurve(
-    0.68 * Math.cos(Math.PI * 1.8) - 0.125,
-    0.05,
-    0.68 * Math.sin(Math.PI * 1.8) + 0.02,
-    4
-  );
-  CreateCurve(
-    0.7 * Math.cos(Math.PI * 1.5) - 0.125,
-    0.05,
-    0.7 * Math.sin(Math.PI * 1.5) + 0.02,
-    4
-  );
-});
-
 /**
  * Sizes
  */
@@ -331,34 +210,7 @@ instantTrackerGroup.add(directionalLight);
 const ambientLight = new THREE.AmbientLight("white", 0.4);
 instantTrackerGroup.add(ambientLight);
 
-/**
- * Camera
- */
-// Base camera
-// const camera2 = new THREE.PerspectiveCamera(
-//   75,
-//   sizes.width / sizes.height,
-//   0.1,
-//   100
-// );
 camera.position.set(0, 10, 1);
-// scene.add(camera2);
-
-// Controls !!!!! NOT WORKING , ZAPPAR CAMERA NOT USABLE WITH ORBITAL CONTROLS !!!!
-
-// const controls = new OrbitControls(camera, canvas);
-// // controls.autoRotate();
-// controls.enableDamping = true;
-// console.log(controls);
-// controls.update();
-
-//TRYING FLY CONTROLS
-
-// controls = new FlyControls(camera, canvas);
-// controls.movementSpeed = 100;
-// controls.rollSpeed = Math.PI / 24;
-// controls.autoForward = false;
-// controls.dragToLook = true;
 
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // const clock = new THREE.Clock();
@@ -377,6 +229,9 @@ console.log(instantTrackerGroup);
 
 const clock = new THREE.Clock();
 let delta = 0;
+
+const stats = new Stats();
+document.body.appendChild(stats.dom);
 // Use a function to render our scene as usual
 function render(): void {
   if (!hasPlaced) {
@@ -387,7 +242,7 @@ function render(): void {
 
   // The Zappar camera must have updateFrame called every frame
   camera.updateFrame(renderer);
-
+  stats.update();
   // Draw the ThreeJS scene in the usual way, but using the Zappar camera
   renderer.render(scene, camera);
   // controls.update(0.01);
