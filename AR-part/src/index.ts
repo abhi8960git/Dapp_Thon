@@ -29,7 +29,7 @@ const manager = new ZapparThree.LoadingManager();
 // ==================== Selectings dom elemets ====================
 const canvas = document.querySelector("canvas.webgl");
 const button_six = document.querySelector(".six");
-const button_four = document.querySelector(".four");
+const buttonFour = document.querySelector(".four");
 
 // Construct our ThreeJS renderer and scene as usual
 const renderer = new THREE.WebGLRenderer({
@@ -96,7 +96,14 @@ gltfLoader.load(
     console.log(gltf);
     gltf.scene.scale.set(0.01, 0.01, 0.01);
     gltf.scene.rotation.y = Math.PI / 2;
-    gltf.scene.position.y = -1;
+    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    gltf.scene.traverse(function (node) {
+      if (node.isMesh) {
+        // node.material = material;
+        console.log(node);
+      }
+    });
+    //gltf.scene.position.y = -1;
 
     // Now the model has been loaded, we can add it to our instant_tracker_group
     instantTrackerGroup.add(gltf.scene);
@@ -108,6 +115,42 @@ gltfLoader.load(
     console.log("An error ocurred loading the GLTF model", err);
   }
 );
+
+// Create a transparent plane geometry
+const planeGeometry = new THREE.PlaneGeometry(5, 5);
+
+// Create a transparent material with opacity
+const planeMaterial = new THREE.MeshBasicMaterial({
+  color: 0xffffff, // Color is irrelevant for transparent materials
+  transparent: true,
+  opacity: 0.5,
+});
+
+// Create the plane mesh
+const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+
+// Position the plane
+planeMesh.position.set(0, 2, -5);
+
+// Add the plane to the scene
+instantTrackerGroup.add(planeMesh);
+
+// adding image dynamically
+buttonFour.addEventListener("click", () => {
+  // Load the pre-saved image texture
+  const textureLoader = new THREE.TextureLoader();
+  const newTexture = textureLoader.load(
+    "../assets/wallhaven-4yjyvk_1920x1080.png"
+  );
+
+  // Iterate through the objects in the scene and apply the new texture
+  scene.traverse((object) => {
+    if (object.isMesh) {
+      object.material.map = newTexture;
+      object.material.needsUpdate = true;
+    }
+  });
+});
 
 // canvas.addEventListener("dblclick", onDoubleClick, false);
 // canvas.addEventListener("mousemove", onMouseMove, false);
