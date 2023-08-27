@@ -14,6 +14,11 @@ const pokemon1 = new URL(
   "../assets/wallhaven-4yjyvk_1920x1080.png",
   import.meta.url
 ).href;
+const pokemon2 = new URL("../assets/favicon.png", import.meta.url).href;
+const pokemon3 = new URL(
+  "../assets/wallhaven-4yjyvk_1920x1080.png",
+  import.meta.url
+).href;
 
 import "./index.css";
 
@@ -123,26 +128,39 @@ gltfLoader.load(
   }
 );
 
+const planeGeometry = new THREE.PlaneGeometry(6, 2, 1, 1);
+// Load the pre-saved image texture
+const textureLoader = new THREE.TextureLoader();
+let newTexture = textureLoader.load(pokemon1);
+console.log(newTexture);
+const planeMaterial = new THREE.MeshBasicMaterial({ map: newTexture });
+const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+planeMaterial.visible = false;
+planeMesh.receiveShadow = true;
+planeMesh.position.set(0, 2, -5);
+// Add the plane to the scene
+instantTrackerGroup.add(planeMesh);
+
 // adding image dynamically
 buttonOne.addEventListener("click", async () => {
-  //create plane
-  const planeGeometry = new THREE.PlaneGeometry(6, 2, 1, 1);
-  // Load the pre-saved image texture
-  const textureLoader = new THREE.TextureLoader();
-  const newTexture = textureLoader.load(pokemon1);
-  console.log(newTexture);
-  const planeMaterial = new THREE.MeshBasicMaterial({ map: newTexture });
-  const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-  // planeMesh.rotation.y = -0.5 * Math.PI;
-  //planeMesh.rotation.x = -Math.PI / 2;
-  //😍planeMesh.rotation.x = -Math.PI / 2;
+  planeMaterial.visible = true;
+  newTexture = textureLoader.load(pokemon1);
+  planeMaterial.map = newTexture;
+  planeMaterial.needsUpdate = true;
+});
 
-  planeMesh.receiveShadow = true;
-  planeMesh.position.set(0, 2, -5);
-  // Add the plane to the scene
-  instantTrackerGroup.add(planeMesh);
+buttonTwo.addEventListener("click", () => {
+  planeMaterial.visible = true;
+  newTexture2 = textureLoader.load(pokemon2);
+  planeMaterial.map = newTexture2;
+  planeMaterial.needsUpdate = true;
+});
 
-  // Update the size of the plane mesh to match the aspect ratio of the image
+buttonThree.addEventListener("click", () => {
+  planeMaterial.visible = true;
+  newTexture3 = textureLoader.load(pokemon1);
+  planeMaterial.map = newTexture3;
+  planeMaterial.needsUpdate = true;
 });
 
 // canvas.addEventListener("dblclick", onDoubleClick, false);
