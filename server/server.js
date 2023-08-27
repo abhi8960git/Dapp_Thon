@@ -4,6 +4,8 @@ const {Web3} = require("web3");
 const ABI= require("./ABI.json"); 
 const { SpheronClient, ProtocolEnum} = require("@spheron/storage");
 const dotenv = require("dotenv");
+const cors = require('cors');
+
 // keep the key secret as it can be paid 
 const web3 = new Web3("https://lingering-tiniest-meadow.ethereum-sepolia.discover.quiknode.pro/612b4f1fdecd98605e21eb212c3a1a2f9c4c7496/");
 const contractAddress = "0x95190C52624363beD26DFcAA40f2Ae7893d3AE68";
@@ -12,6 +14,7 @@ dotenv.config();
 const client = new SpheronClient({ token: process.env.TOKEN });
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.json());
 
 const PORT = 5000;
@@ -80,19 +83,20 @@ app.post("/api/upload", async (req, res) => {
 app.post('/api/members', async (req, res) => {
   try {
     const {account}= req.body;
+    console.log("this is account",account);
     
     const numNFTs = await FetchNFT(account);
-    if(numNFTs >= 1){
-      console.log("ghood")
+    if(numNFTs > 0){
+        res.status(200).json({status:200, numNFTs})
     }else{
-    
+       res.status(400).json({status:400, message:"You have 0 NFT's"});
     }
     // console.log( typeof numNFTs)
-    res.status(200).send(numNFTs.toString())
+    // res.status(200).send(numNFTs.toString())
   } catch (error) {
     // res.sendStatus(500);
     // res.json({"error": error});
-    res.status(500).send("erro")
+    res.status(500).send("error")
   }
 });
 
