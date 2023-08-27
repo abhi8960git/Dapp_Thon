@@ -82,21 +82,25 @@ app.post("/api/upload", async (req, res) => {
 
 app.post('/api/members', async (req, res) => {
   try {
-    const {account}= req.body;
+    const account= req.body.from;
     console.log("this is account",account);
     
     const numNFTs = await FetchNFT(account);
-    if(numNFTs > 0){
-        res.status(200).json({status:200, numNFTs})
+    const nfts = Number(numNFTs);
+    console.log(nfts);
+
+    if(nfts > 0){
+        res.status(200).json({status:200, nfts})
     }else{
-       res.status(400).json({status:400, message:"You have 0 NFT's"});
+       res.status(400).json({status:400, nfts});
     }
     // console.log( typeof numNFTs)
     // res.status(200).send(numNFTs.toString())
   } catch (error) {
     // res.sendStatus(500);
     // res.json({"error": error});
-    res.status(500).send("error")
+   res.status(500).json({"error":error})
+   console.error(error);
   }
 });
 

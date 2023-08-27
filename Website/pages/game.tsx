@@ -19,11 +19,16 @@ const game = () => {
             const res = await fetch('http://localhost:5000/api/members',{
                 method:"POST",
                 headers:{
-                    "content-type":"applications/json"
+                    "Content-Type":"application/json"
                 },
-                body:JSON.stringify({from:'0x2223899D483506A6d4CcCa6142B2D666656d52c7'})
+                body:JSON.stringify({from:account})
             })
             const data = await res.json();
+            if(data.nfts > 0){
+                router.push('/pokemon')
+            }else{
+                window.alert("You don't have NFT's");
+            }
             console.log(data);
         } catch (error) {
             console.log(error);
