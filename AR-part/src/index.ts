@@ -7,9 +7,12 @@
 import * as THREE from "three";
 import * as ZapparThree from "@zappar/zappar-threejs";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import Stats from "three/examples/jsm/libs/stats.module";
+import { GUI } from "dat.gui";
 
-const model = new URL("../assets/key_card.glb", import.meta.url).href;
+const model = new URL("../assets/pikachu.glb", import.meta.url).href;
+const fbxModel = new URL("../assets/thrill.fbx", import.meta.url).href;
 const pokemon1 = new URL(
   "../assets/wallhaven-4yjyvk_1920x1080.png",
   import.meta.url
@@ -102,12 +105,19 @@ scene.add(instantTrackerGroup);
 // Pass our loading manager in to ensure the progress bar works correctly
 const gltfLoader = new GLTFLoader(manager);
 
+let mixer: THREE.AnimationMixer;
+let modelReady = false;
+const animationActions: THREE.AnimationAction[] = [];
+let activeAction: THREE.AnimationAction;
+let lastAction: THREE.AnimationAction;
+const fbxLoader: FBXLoader = new FBXLoader();
+
 gltfLoader.load(
   model,
   (gltf) => {
     console.log(gltf);
-    gltf.scene.scale.set(0.01, 0.01, 0.01);
-    gltf.scene.rotation.y = Math.PI / 2;
+    gltf.scene.scale.set(5, 5, 5);
+    //gltf.scene.rotation.y = Math.PI / 2;
     const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     gltf.scene.traverse(function (node) {
       if (node.isMesh) {
@@ -115,10 +125,32 @@ gltfLoader.load(
         console.log(node);
       }
     });
-    //gltf.scene.position.y = -1;
+    mixer = new THREE.AnimationMixer(gltf);
 
     // Now the model has been loaded, we can add it to our instant_tracker_group
     instantTrackerGroup.add(gltf.scene);
+
+    fbxLoader.load(
+      fbxModel,
+      (object) => {
+        console.log("loaded goofyrunning");
+        (object as THREE.Object3D).animations[0].tracks.shift(); //delete the specific track that moves the object forward while running
+        //console.dir((object as THREE.Object3D).animations[0])
+        const animationAction = mixer.clipAction(
+          (object as THREE.Object3D).animations[0]
+        );
+        animationActions.push(animationAction);
+        animationsFolder.add(animations, "Thrill");
+
+        modelReady = true;
+      },
+      (xhr) => {
+        console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
   },
   (xhr) => {
     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
@@ -286,6 +318,37 @@ let delta = 0;
 
 const stats = new Stats();
 document.body.appendChild(stats.dom);
+
+const animations = {
+  default: function () {
+    setAction(animationActions[0]);
+  },
+  Boxing: function () {
+    setAction(animationActions[1]);
+  },
+  bellydance: function () {
+    setAction(animationActions[2]);
+  },
+  Thrill: function () {
+    setAction(animationActions[3]);
+  },
+};
+
+const setAction = (toAction: THREE.AnimationAction) => {
+  if (toAction != activeAction) {
+    lastAction = activeAction;
+    activeAction = toAction;
+    lastAction.stop();
+    //lastAction.fadeOut(1)
+    activeAction.reset();
+    //activeAction.fadeIn(1)
+    activeAction.play();
+  }
+};
+
+const gui = new GUI();
+const animationsFolder = gui.addFolder("Animations");
+animationsFolder.open();
 // Use a function to render our scene as usual
 function render(): void {
   if (!hasPlaced) {
@@ -295,6 +358,7 @@ function render(): void {
   }
 
   // The Zappar camera must have updateFrame called every frame
+  if (modelReady) mixer.update(clock.getDelta());
   camera.updateFrame(renderer);
   stats.update();
   // Draw the ThreeJS scene in the usual way, but using the Zappar camera
