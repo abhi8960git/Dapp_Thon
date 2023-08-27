@@ -10,6 +10,10 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import Stats from "three/examples/jsm/libs/stats.module";
 
 const model = new URL("../assets/key_card.glb", import.meta.url).href;
+const pokemon1 = new URL(
+  "../assets/wallhaven-4yjyvk_1920x1080.png",
+  import.meta.url
+).href;
 
 import "./index.css";
 
@@ -30,6 +34,9 @@ const manager = new ZapparThree.LoadingManager();
 const canvas = document.querySelector("canvas.webgl");
 const button_six = document.querySelector(".six");
 const buttonFour = document.querySelector(".four");
+const buttonOne = document.getElementById("button1");
+const buttonTwo = document.getElementById("button2");
+const buttonThree = document.getElementById("button3");
 
 // Construct our ThreeJS renderer and scene as usual
 const renderer = new THREE.WebGLRenderer({
@@ -116,40 +123,26 @@ gltfLoader.load(
   }
 );
 
-// Create a transparent plane geometry
-const planeGeometry = new THREE.PlaneGeometry(5, 5);
-
-// Create a transparent material with opacity
-const planeMaterial = new THREE.MeshBasicMaterial({
-  color: 0xffffff, // Color is irrelevant for transparent materials
-  transparent: true,
-  opacity: 0.5,
-});
-
-// Create the plane mesh
-const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-
-// Position the plane
-planeMesh.position.set(0, 2, -5);
-
-// Add the plane to the scene
-instantTrackerGroup.add(planeMesh);
-
 // adding image dynamically
-buttonFour.addEventListener("click", () => {
+buttonOne.addEventListener("click", async () => {
+  //create plane
+  const planeGeometry = new THREE.PlaneGeometry(6, 2, 1, 1);
   // Load the pre-saved image texture
   const textureLoader = new THREE.TextureLoader();
-  const newTexture = textureLoader.load(
-    "../assets/wallhaven-4yjyvk_1920x1080.png"
-  );
+  const newTexture = textureLoader.load(pokemon1);
+  console.log(newTexture);
+  const planeMaterial = new THREE.MeshBasicMaterial({ map: newTexture });
+  const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+  // planeMesh.rotation.y = -0.5 * Math.PI;
+  //planeMesh.rotation.x = -Math.PI / 2;
+  //😍planeMesh.rotation.x = -Math.PI / 2;
 
-  // Iterate through the objects in the scene and apply the new texture
-  scene.traverse((object) => {
-    if (object.isMesh) {
-      object.material.map = newTexture;
-      object.material.needsUpdate = true;
-    }
-  });
+  planeMesh.receiveShadow = true;
+  planeMesh.position.set(0, 2, -5);
+  // Add the plane to the scene
+  instantTrackerGroup.add(planeMesh);
+
+  // Update the size of the plane mesh to match the aspect ratio of the image
 });
 
 // canvas.addEventListener("dblclick", onDoubleClick, false);
