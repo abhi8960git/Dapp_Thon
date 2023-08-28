@@ -41,10 +41,17 @@ const MintNFT  = async()=>{
   
 }
 
+// This api end point will upload out file imag path to ipfs (Spheron Storage ) and return the ipfs uploaded url 
+
 app.post("/api/upload", async (req, res) => {
   const name = "my-bucket";
 
   const { filePath } = req.body;
+
+  const lastIndex = filePath.lastIndexOf('/');
+  const fileName = filePath.substring(lastIndex + 1);
+
+
   let currentlyUploaded = 0;
 
   try {
@@ -66,11 +73,12 @@ app.post("/api/upload", async (req, res) => {
       .status(200)
       .json({
         message: "Upload completed",
-        uploadId,
-        bucketId,
-        protocolLink,
-        dynamicLinks,
-        cid,
+        // uploadId,
+        // bucketId,
+        // protocolLink,
+        // dynamicLinks,
+        // cid,
+        link:`https://${cid}.ipfs.sphn.link/${fileName}`
       });
   } catch (error) {
     console.error("Error uploading file:", error);
@@ -78,6 +86,10 @@ app.post("/api/upload", async (req, res) => {
     res.sendStatus(500).json({ error: "Error uploading file" });
   }
 });
+
+
+
+// this api end point is to get the NFT count of a user having public address 
 
 
 app.post('/api/members', async (req, res) => {
