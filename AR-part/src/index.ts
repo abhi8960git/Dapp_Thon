@@ -117,7 +117,7 @@ gltfLoader.load(
   (gltf) => {
     console.log(gltf);
     gltf.scene.scale.set(5, 5, 5);
-    //gltf.scene.rotation.y = Math.PI / 2;
+    gltf.scene.position.y = 2;
     const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     gltf.scene.traverse(function (node) {
       if (node.isMesh) {
@@ -173,6 +173,35 @@ planeMesh.position.set(0, 2, -5);
 // Add the plane to the scene
 instantTrackerGroup.add(planeMesh);
 
+//creating grid
+
+const planeMesh2 = new THREE.Mesh(
+  new THREE.PlaneGeometry(20, 20),
+  new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, visible: false })
+);
+
+planeMesh2.rotateX(-Math.PI / 2);
+planeMesh2.name = "ground";
+//planeMesh2.position.y = -3;
+
+instantTrackerGroup.add(planeMesh2);
+
+const grid = new THREE.GridHelper(20, 20);
+//grid.position.y = -3;
+instantTrackerGroup.add(grid);
+
+//highlight square
+
+const hightSquare = new THREE.Mesh(
+  new THREE.PlaneGeometry(1, 1),
+  new THREE.MeshBasicMaterial({ side: THREE.DoubleSide })
+);
+
+hightSquare.rotateX(-Math.PI / 2);
+hightSquare.position.set(0.5, 0, 0.5);
+
+instantTrackerGroup.add(hightSquare);
+
 // adding image dynamically
 buttonOne.addEventListener("click", async () => {
   planeMaterial.visible = true;
@@ -195,74 +224,67 @@ buttonThree.addEventListener("click", () => {
   planeMaterial.needsUpdate = true;
 });
 
-// canvas.addEventListener("dblclick", onDoubleClick, false);
+//adding rayRaster
+
+canvas.addEventListener("click", onClick, false);
 // canvas.addEventListener("mousemove", onMouseMove, false);
+const mouse = new THREE.Vector2();
+const raycaster = new THREE.Raycaster();
 
-// const mouse = new THREE.Vector2();
+function onClick(event: MouseEvent) {
+  mouse.set(
+    (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
+    -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
+  );
+  raycaster.setFromCamera(mouse, camera);
 
-// function onMouseMove(event: MouseEvent) {
-//   console.log("started");
-//   mouse.set(
-//     (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
-//     -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
-//   );
-
-//   console.log(mouse.x, mouse.y);
-//   camera.position.x += 1;
-//   camera.position.y += 1;
-
-//   raycaster.setFromCamera(mouse, camera);
-
-//   const intersects = raycaster.intersectObjects(sceneMeshes, false);
-//   console.log(intersects);
-//   if (intersects.length > 0) {
-//     // console.log(sceneMeshes.length + " " + intersects.length)
-//     // console.log(intersects[0])
-//     // console.log(intersects[0].object.userData.name + " " + intersects[0].distance + " ")
-//     // console.log((intersects[0].face as THREE.Face).normal)
-//     // line.position.set(0, 0, 0)
-//     // line.lookAt((intersects[0].face as THREE.Face).normal)
-//     // line.position.copy(intersects[0].point)
-
-//     const n = new THREE.Vector3();
-//     n.copy((intersects[0].face as THREE.Face).normal);
-//     n.transformDirection(intersects[0].object.matrixWorld);
-
-//     arrowHelper.setDirection(n);
-//     arrowHelper.position.copy(intersects[0].point);
-//   }
-// }
-
-// function onDoubleClick(event: MouseEvent) {
-//   mouse.set(
-//     (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
-//     -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
-//   );
-//   raycaster.setFromCamera(mouse, camera);
-//   camera.position.z += 10;
-//   camera.position.y += 10;
-
-//   const intersects = raycaster.intersectObjects(sceneMeshes, false);
-
-//   if (intersects.length > 0) {
-//     const n = new THREE.Vector3();
-//     n.copy((intersects[0].face as THREE.Face).normal);
-//     n.transformDirection(intersects[0].object.matrixWorld);
-
-//     // const cube = new THREE.Mesh(boxGeometry, material)
-//     const cube = new THREE.Mesh(coneGeometry, material);
-
-//     cube.lookAt(n);
-//     cube.rotateX(Math.PI / 2);
-//     cube.position.copy(intersects[0].point);
-//     cube.position.addScaledVector(n, 0.1);
-
-//     instantTrackerGroup.add(cube);
-//     sceneMeshes.push(cube);
-//   }
-// }
+  const intersects = raycaster.intersectObjects(instantTrackerGroup.children);
+  intersects.forEach(function (intersect) {
+    console.log("intersecting", intersect);
+    if (intersect.object.name === "ground") {
+      const highlightPos = new THREE.Vector3()
+        .copy(intersect.point)
+        .floor()
+        .addScalar(0.5);
+      hightSquare.position.set(highlightPos.x, 0, highlightPos.z);
+    }
+  });
+}
 
 // console.log(sceneMeshes);
+
+// creating nft
+
+button_six.addEventListener("click", () => {
+  // Create an image from the canvas
+  // Temporarily set the camera to focus on the planeMesh
+  const originalCameraPosition = camera.position.clone();
+  camera.position.set(
+    planeMesh.position.x,
+    planeMesh.position.y,
+    planeMesh.position.z + 5
+  );
+  camera.lookAt(planeMesh.position);
+
+  // Render the scene
+  renderer.render(scene, camera);
+
+  // Capture the rendered image from the main renderer
+  const screenshotImage = new Image();
+  screenshotImage.src = renderer.domElement.toDataURL("image/png");
+
+  // Create a link element for downloading
+  const link = document.createElement("a");
+  link.href = screenshotImage.src;
+  link.download = "nft_image.png"; // Set the desired file name
+
+  // Trigger the click event on the link to initiate the download
+  link.click();
+
+  // Reset the camera and visibility of the planeMesh
+  camera.position.copy(originalCameraPosition);
+  camera.lookAt(0, 0, 0);
+});
 
 /**
  * Sizes
