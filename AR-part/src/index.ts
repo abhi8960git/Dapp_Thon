@@ -23,6 +23,9 @@ const pokemon3 = new URL(
   import.meta.url
 ).href;
 
+const tree1 = new URL("../assets/1.fbx", import.meta.url).href;
+const tree2 = new URL("../assets/tree.glb", import.meta.url).href;
+
 import "./index.css";
 
 if (ZapparThree.browserIncompatible()) {
@@ -151,6 +154,38 @@ gltfLoader.load(
         console.log(error);
       }
     );
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  (err) => {
+    console.log("An error ocurred loading the GLTF model", err);
+  }
+);
+
+// loading models
+
+// fbxLoader.load(
+//   tree1,
+//   (object) => {
+//     console.log("tree added", object);
+//     object.scale.set(10, 10, 10);
+//     instantTrackerGroup.add(object);
+//   },
+//   (xhr) => {
+//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+//   },
+//   (error) => {
+//     console.log(error);
+//   }
+// );
+
+gltfLoader.load(
+  tree2,
+  (gltf) => {
+    console.log("tree", gltf);
+    gltf.scene.scale.set(50, 50, 50);
+    instantTrackerGroup.add(gltf.scene);
   },
   (xhr) => {
     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
