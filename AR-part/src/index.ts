@@ -23,8 +23,14 @@ const pokemon3 = new URL(
   import.meta.url
 ).href;
 
-const tree1 = new URL("../assets/1.fbx", import.meta.url).href;
-const tree2 = new URL("../assets/7.glb", import.meta.url).href;
+const tree1 = new URL("../assets/1.glb", import.meta.url).href;
+const tree2 = new URL("../assets/2.glb", import.meta.url).href;
+const tree3 = new URL("../assets/3.glb", import.meta.url).href;
+const tree4 = new URL("../assets/4.glb", import.meta.url).href;
+const tree5 = new URL("../assets/5.glb", import.meta.url).href;
+const tree6 = new URL("../assets/6.glb", import.meta.url).href;
+const tree7 = new URL("../assets/7.glb", import.meta.url).href;
+let model1, model2;
 
 import "./index.css";
 
@@ -115,45 +121,65 @@ let activeAction: THREE.AnimationAction;
 let lastAction: THREE.AnimationAction;
 const fbxLoader: FBXLoader = new FBXLoader();
 
+// gltfLoader.load(
+//   model,
+//   (gltf) => {
+//     console.log(gltf);
+//     gltf.scene.scale.set(5, 5, 5);
+//     gltf.scene.position.y = 2;
+//     const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+//     gltf.scene.traverse(function (node) {
+//       if (node.isMesh) {
+//         // node.material = material;
+//         console.log(node);
+//       }
+//     });
+//     mixer = new THREE.AnimationMixer(gltf);
+
+//     // Now the model has been loaded, we can add it to our instant_tracker_group
+//     instantTrackerGroup.add(gltf.scene);
+
+//     fbxLoader.load(
+//       fbxModel,
+//       (object) => {
+//         console.log("loaded goofyrunning");
+//         (object as THREE.Object3D).animations[0].tracks.shift(); //delete the specific track that moves the object forward while running
+//         //console.dir((object as THREE.Object3D).animations[0])
+//         const animationAction = mixer.clipAction(
+//           (object as THREE.Object3D).animations[0]
+//         );
+//         animationActions.push(animationAction);
+//         animationsFolder.add(animations, "Thrill");
+
+//         modelReady = true;
+//       },
+//       (xhr) => {
+//         console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+//       },
+//       (error) => {
+//         console.log(error);
+//       }
+//     );
+//   },
+//   (xhr) => {
+//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+//   },
+//   (err) => {
+//     console.log("An error ocurred loading the GLTF model", err);
+//   }
+// );
+
+//------------------MODEL LOADING STARTED---------------------
+// loading models
+
 gltfLoader.load(
-  model,
+  tree1,
   (gltf) => {
-    console.log(gltf);
-    gltf.scene.scale.set(5, 5, 5);
-    gltf.scene.position.y = 2;
-    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    gltf.scene.traverse(function (node) {
-      if (node.isMesh) {
-        // node.material = material;
-        console.log(node);
-      }
-    });
-    mixer = new THREE.AnimationMixer(gltf);
-
-    // Now the model has been loaded, we can add it to our instant_tracker_group
+    model1 = gltf.scene;
+    console.log("tree", gltf);
+    gltf.scene.scale.set(0.5, 0.5, 0.5);
+    gltf.scene.position.set(-6, 0, -6);
     instantTrackerGroup.add(gltf.scene);
-
-    fbxLoader.load(
-      fbxModel,
-      (object) => {
-        console.log("loaded goofyrunning");
-        (object as THREE.Object3D).animations[0].tracks.shift(); //delete the specific track that moves the object forward while running
-        //console.dir((object as THREE.Object3D).animations[0])
-        const animationAction = mixer.clipAction(
-          (object as THREE.Object3D).animations[0]
-        );
-        animationActions.push(animationAction);
-        animationsFolder.add(animations, "Thrill");
-
-        modelReady = true;
-      },
-      (xhr) => {
-        console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
   },
   (xhr) => {
     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
@@ -162,29 +188,11 @@ gltfLoader.load(
     console.log("An error ocurred loading the GLTF model", err);
   }
 );
-
-// loading models
-
-// fbxLoader.load(
-//   tree1,
-//   (object) => {
-//     console.log("tree added", object);
-//     object.scale.set(10, 10, 10);
-//     instantTrackerGroup.add(object);
-//   },
-//   (xhr) => {
-//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-//   },
-//   (error) => {
-//     console.log(error);
-//   }
-// );
-
 gltfLoader.load(
   tree2,
   (gltf) => {
     console.log("tree", gltf);
-    gltf.scene.scale.set(1, 1, 1);
+    gltf.scene.scale.set(0.5, 0.5, 0.5);
     //gltf.scene.position.y = 2;
     instantTrackerGroup.add(gltf.scene);
   },
@@ -195,6 +203,99 @@ gltfLoader.load(
     console.log("An error ocurred loading the GLTF model", err);
   }
 );
+gltfLoader.load(
+  tree3,
+  (gltf) => {
+    console.log("tree", gltf);
+    gltf.scene.scale.set(0.5, 0.5, 0.5);
+    //gltf.scene.position.set(-10, 0, -10);
+    instantTrackerGroup.add(gltf.scene);
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  (err) => {
+    console.log("An error ocurred loading the GLTF model", err);
+  }
+);
+gltfLoader.load(
+  tree4,
+  (gltf) => {
+    console.log("tree", gltf);
+    gltf.scene.scale.set(0.5, 0.5, 0.5);
+    //gltf.scene.position.y = 2;
+    instantTrackerGroup.add(gltf.scene);
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  (err) => {
+    console.log("An error ocurred loading the GLTF model", err);
+  }
+);
+gltfLoader.load(
+  tree5,
+  (gltf) => {
+    console.log("tree", gltf);
+    gltf.scene.scale.set(0.5, 0.5, 0.5);
+    //gltf.scene.position.y = 2;
+    instantTrackerGroup.add(gltf.scene);
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  (err) => {
+    console.log("An error ocurred loading the GLTF model", err);
+  }
+);
+
+gltfLoader.load(
+  tree6,
+  (gltf) => {
+    console.log("tree", gltf);
+    gltf.scene.scale.set(0.5, 0.5, 0.5);
+    //gltf.scene.position.y = 2;
+    instantTrackerGroup.add(gltf.scene);
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  (err) => {
+    console.log("An error ocurred loading the GLTF model", err);
+  }
+);
+
+gltfLoader.load(
+  tree7,
+  (gltf) => {
+    console.log("tree", gltf);
+    gltf.scene.scale.set(0.5, 0.5, 0.5);
+    //gltf.scene.position.y = 2;
+    instantTrackerGroup.add(gltf.scene);
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  (err) => {
+    console.log("An error ocurred loading the GLTF model", err);
+  }
+);
+
+console.log(model1, "in if");
+models = async () => {
+  const modelClone1 = await model1.clone();
+
+  // You can modify each clone's position, rotation, or scale as needed
+  modelClone1.position.set(-5, 0, -5);
+  //modelClone2.position.set(x2, y2, z2);
+
+  // Add the clones to the scene
+  scene.add(modelClone1);
+  //scene.add(modelClone2);
+};
+models();
+
+//------------------MODEL LOADING FINISHED---------------------
 
 const planeGeometry = new THREE.PlaneGeometry(6, 2, 1, 1);
 // Load the pre-saved image texture
