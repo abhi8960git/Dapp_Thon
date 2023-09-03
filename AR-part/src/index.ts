@@ -24,7 +24,7 @@ const pokemon3 = new URL(
 ).href;
 
 const tree1 = new URL("../assets/1.fbx", import.meta.url).href;
-const tree2 = new URL("../assets/tree.glb", import.meta.url).href;
+const tree2 = new URL("../assets/7.glb", import.meta.url).href;
 
 import "./index.css";
 
@@ -184,7 +184,8 @@ gltfLoader.load(
   tree2,
   (gltf) => {
     console.log("tree", gltf);
-    gltf.scene.scale.set(50, 50, 50);
+    gltf.scene.scale.set(1, 1, 1);
+    //gltf.scene.position.y = 2;
     instantTrackerGroup.add(gltf.scene);
   },
   (xhr) => {
@@ -268,8 +269,8 @@ const raycaster = new THREE.Raycaster();
 
 function onClick(event: MouseEvent) {
   mouse.set(
-    (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
-    -(event.clientY / renderer.domElement.clientHeight) * 2 + 1
+    (event.offsetX / renderer.domElement.clientWidth) * 2 - 1,
+    -(event.offsetY / renderer.domElement.clientHeight) * 2 + 1
   );
   raycaster.setFromCamera(mouse, camera);
 
@@ -281,7 +282,8 @@ function onClick(event: MouseEvent) {
         .copy(intersect.point)
         .floor()
         .addScalar(0.5);
-      hightSquare.position.set(highlightPos.x, 0, highlightPos.z);
+
+      hightSquare.position.set(highlightPos.x, 0, highlightPos.z + 5);
     }
   });
 }
