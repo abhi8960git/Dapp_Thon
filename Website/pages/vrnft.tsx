@@ -55,6 +55,12 @@
 // export default VrNFT
 
 import React from "react";
+import Image from "next/image";
+import logo from "../public/output-onlinegiftools.gif";
+import metamask from "../public/metamask-seeklogo.com.svg";
+import spheron from "../public/icon-spheron-network.png";
+import link from '../public/output-onlinegiftools(1).gif';
+
 import {
   Modal,
   ModalContent,
@@ -91,31 +97,45 @@ export default function App() {
       >
         <ModalContent className=" w-[70%] rounded-md ">
           {(onClose) => (
-            < >
-              <ModalHeader className="flex flex-col gap-1">
-                Modal Title
-              </ModalHeader>
+            <>
+              <ModalHeader className=" flex">Modal Title</ModalHeader>
               <ModalBody>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
+                {false ? (
+                  <div>
+                    <div className="flex items-center mx-7 glassmorphism ">
+                      <Image src={logo} width={45} alt="logo"></Image>
+                      <p className="text-white">
+                        Screenshot from 2023-08-30 16-42-32.png
+                      </p>
+                    </div>
+                    <div className=" mx-8 text-xl uppercase flex  justify-evenly mt-7 ">
+                      <button className="flex text-white gap-2 glassmorphism p-3   ">
+                        CONNECT WALLET{" "}
+                        <Image width={30} src={metamask} alt="logo"></Image>
+                      </button>
+                      <button className="flex text-white gap-2  glassmorphism  p-3">
+                        UPLOAD TO IPFS{" "}
+                        <Image width={30} src={spheron} alt="logo"></Image>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="">
+                    <div className="flex items-center mx-7 glassmorphism ">
+                      <Image src={link} width={45} alt="logo"></Image>
+                      <p className="text-white">
+                        Screenshot from 2023-08-30 16-42-32.png
+                      </p>
+                    </div>
+                   <div className="mt-5 mx-7 flex justify-center items-center">
+                   <button className="flex text-white gap-2  glassmorphism  p-3 font-[700]">
+                      MINT YOUR NFT{" "}
+                    </button>
+                   </div>
+                  </div>
+                )}
               </ModalBody>
-              <ModalFooter>
+              <ModalFooter className="rounded-b-md">
                 <Button color="success" variant="light" onPress={onClose}>
                   Close
                 </Button>
