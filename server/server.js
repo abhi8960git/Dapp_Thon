@@ -69,8 +69,9 @@ app.post("/api/upload", async (req, res) => {
       });
 
     // You can send a response to the frontend indicating success
-    res
-      .status(200)
+    if(cid){
+      res
+      .redirect(200)
       .json({
         message: "Upload completed",
         // uploadId,
@@ -80,6 +81,8 @@ app.post("/api/upload", async (req, res) => {
         // cid,
         link:`https://${cid}.ipfs.sphn.link/${fileName}`
       });
+    }
+  
   } catch (error) {
     console.error("Error uploading file:", error);
     // Send an error response to the frontend
@@ -118,7 +121,7 @@ app.post('/api/members', async (req, res) => {
 
 
 
-
+// multer use case 
 
 
 app.get('/good',(req,res)=>{

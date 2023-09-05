@@ -21,14 +21,41 @@
   }
 }
 
+
+
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  width: 100vw;
+  height: 100vh;
+background-image: url('../public/background.png'); 
+z-index: -99;
+background-repeat: no-repeat;
+background-attachment: fixed;
+/* overflow: hidden; */
+}
+
+body::after{
+  content: '';
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top:0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: -9999;
+  background-attachment: fixed;
+}
+
+.glassmorphism{
+  backdrop-filter: blur(2px) saturate(86%);
+  -webkit-backdrop-filter: blur(2px) saturate(86%);
+  background-color: rgba(17, 25, 40, 0.77);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.125);
+  z-index: 9;
+}
+
+.image-animation{
+
 }
 
 .font {
