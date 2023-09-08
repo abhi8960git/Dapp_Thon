@@ -1,0 +1,26 @@
+{
+  "name": "pokemon",
+  "version": "1.0.0",
+  "description": "Pokemon AR card",
+  "source": "src/index.html",
+  "scripts": {
+    "start": "parcel --https",
+    "build": "parcel build --public-url='./'"
+  },
+  "author": "Zappar Limited",
+  "license": "MIT",
+  "dependencies": {
+    "@types/dat.gui": "^0.7.10",
+    "@zappar/zappar-threejs": "2.0.1",
+    "dat.gui": "^0.7.9",
+    "lil-gui": "^0.18.1",
+    "three": "^0.137.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.138.0",
+    "gh-pages": "^3.1.0",
+    "parcel": "^2.7.0"
+  },
+  "main": "index.js",
+  "keywords": []
+}
