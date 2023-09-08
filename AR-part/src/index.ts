@@ -20,10 +20,7 @@ const pokemon1 = new URL(
   import.meta.url
 ).href;
 const pokemon2 = new URL("../assets/favicon.png", import.meta.url).href;
-const pokemon3 = new URL(
-  "../assets/wallhaven-4yjyvk_1920x1080.png",
-  import.meta.url
-).href;
+const pokemon3 = new URL("../assets/peakpx-2.jpg", import.meta.url).href;
 
 const pokeball = new URL(
   "../assets/pokemon_basic_pokeball.glb",
@@ -111,6 +108,7 @@ gltfLoader.load(
     gltf.scene.scale.set(0.02, 0.02, 0.02);
     // gltf.scene.position.y = 2;
     gltf.scene.position.z = -9;
+    gltf.scene.position.x = 2;
     gltf.scene.rotation.y -= Math.PI / 2;
 
     // Now the model has been loaded, we can add it to our instant_tracker_group
@@ -129,8 +127,9 @@ gltfLoader.load(
   (gltf) => {
     console.log(gltf, "pokeball");
     gltf.scene.scale.set(0.2, 0.2, 0.2);
-    gltf.scene.position.y = 3.5;
+    gltf.scene.position.y = 1.5;
     gltf.scene.position.z = -5;
+    gltf.scene.position.x = -2;
     //gltf.scene.rotation.y -= Math.PI / 2;
     gltf.scene.name = "Pokeball";
 
@@ -152,6 +151,7 @@ gltfLoader.load(
     gltf.scene.scale.set(5, 5, 5);
     gltf.scene.position.y = 1;
     gltf.scene.position.z = -4;
+    gltf.scene.position.x = 2;
     const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     gltf.scene.traverse(function (node) {
       if (node.isMesh) {
@@ -195,7 +195,10 @@ gltfLoader.load(
 );
 //------------------MODEL LOADING FINISHED---------------------
 
-const planeGeometry = new THREE.PlaneGeometry(6, 2, 1, 1);
+const planeWidth = 1.5; // The width of the plane in your scene
+const planeHeight = (2796 / 1290) * planeWidth; // Calculate the height to maintain the image aspect ratio
+
+const planeGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight, 1, 1);
 // Load the pre-saved image texture
 const textureLoader = new THREE.TextureLoader();
 let newTexture = textureLoader.load(pokemon1);
@@ -254,7 +257,7 @@ buttonTwo.addEventListener("click", () => {
 
 buttonThree.addEventListener("click", () => {
   planeMaterial.visible = true;
-  newTexture3 = textureLoader.load(pokemon1);
+  newTexture3 = textureLoader.load(pokemon3);
   planeMaterial.map = newTexture3;
   planeMaterial.needsUpdate = true;
 });
@@ -314,36 +317,36 @@ function onClick(event: MouseEvent) {
 
 // creating nft
 
-// button_six.addEventListener("click", () => {
-//   // Create an image from the canvas
-//   // Temporarily set the camera to focus on the planeMesh
-//   const originalCameraPosition = camera.position.clone();
-//   camera.position.set(
-//     planeMesh.position.x,
-//     planeMesh.position.y,
-//     planeMesh.position.z + 5
-//   );
-//   camera.lookAt(planeMesh.position);
+button_six.addEventListener("click", () => {
+  // Create an image from the canvas
+  // Temporarily set the camera to focus on the planeMesh
+  const originalCameraPosition = camera.position.clone();
+  camera.position.set(
+    planeMesh.position.x,
+    planeMesh.position.y,
+    planeMesh.position.z + 5
+  );
+  camera.lookAt(planeMesh.position);
 
-//   // Render the scene
-//   renderer.render(scene, camera);
+  // Render the scene
+  renderer.render(scene, camera);
 
-//   // Capture the rendered image from the main renderer
-//   const screenshotImage = new Image();
-//   screenshotImage.src = renderer.domElement.toDataURL("image/png");
+  // Capture the rendered image from the main renderer
+  const screenshotImage = new Image();
+  screenshotImage.src = renderer.domElement.toDataURL("image/png");
 
-//   // Create a link element for downloading
-//   const link = document.createElement("a");
-//   link.href = screenshotImage.src;
-//   link.download = "nft_image.png"; // Set the desired file name
+  // Create a link element for downloading
+  const link = document.createElement("a");
+  link.href = screenshotImage.src;
+  link.download = "nft_image.png"; // Set the desired file name
 
-//   // Trigger the click event on the link to initiate the download
-//   link.click();
+  // Trigger the click event on the link to initiate the download
+  link.click();
 
-//   // Reset the camera and visibility of the planeMesh
-//   camera.position.copy(originalCameraPosition);
-//   camera.lookAt(0, 0, 0);
-// });
+  // Reset the camera and visibility of the planeMesh
+  camera.position.copy(originalCameraPosition);
+  camera.lookAt(0, 0, 0);
+});
 
 /**
  * Sizes
@@ -400,36 +403,6 @@ let delta = 0;
 const stats = new Stats();
 document.body.appendChild(stats.dom);
 
-const animations = {
-  default: function () {
-    setAction(animationActions[0]);
-  },
-  Boxing: function () {
-    setAction(animationActions[1]);
-  },
-  bellydance: function () {
-    setAction(animationActions[2]);
-  },
-  Thrill: function () {
-    setAction(animationActions[3]);
-  },
-};
-
-const setAction = (toAction: THREE.AnimationAction) => {
-  if (toAction != activeAction) {
-    lastAction = activeAction;
-    activeAction = toAction;
-    lastAction.stop();
-    //lastAction.fadeOut(1)
-    activeAction.reset();
-    //activeAction.fadeIn(1)
-    activeAction.play();
-  }
-};
-
-const gui = new GUI();
-const animationsFolder = gui.addFolder("Animations");
-animationsFolder.open();
 // Use a function to render our scene as usual
 function render(): void {
   if (!hasPlaced) {
