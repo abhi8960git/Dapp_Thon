@@ -283,20 +283,6 @@ gltfLoader.load(
   }
 );
 
-console.log(model1, "in if");
-models = async () => {
-  const modelClone1 = await model1.clone();
-
-  // You can modify each clone's position, rotation, or scale as needed
-  modelClone1.position.set(-5, 0, -5);
-  //modelClone2.position.set(x2, y2, z2);
-
-  // Add the clones to the scene
-  scene.add(modelClone1);
-  //scene.add(modelClone2);
-};
-models();
-
 //------------------MODEL LOADING FINISHED---------------------
 
 const planeGeometry = new THREE.PlaneGeometry(6, 2, 1, 1);

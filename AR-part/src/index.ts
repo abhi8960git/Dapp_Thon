@@ -15,11 +15,8 @@ let isPokeballRotating = false;
 
 const model = new URL("../assets/pikachu.glb", import.meta.url).href;
 const fbxModel = new URL("../assets/thrill.fbx", import.meta.url).href;
-const pokemon1 = new URL(
-  "../assets/wallhaven-4yjyvk_1920x1080.png",
-  import.meta.url
-).href;
-const pokemon2 = new URL("../assets/favicon.png", import.meta.url).href;
+const pokemon1 = new URL("../assets/peakpx-3.jpg", import.meta.url).href;
+const pokemon2 = new URL("../assets/peakpx-2.jpg", import.meta.url).href;
 const pokemon3 = new URL("../assets/peakpx-2.jpg", import.meta.url).href;
 
 const pokeball = new URL(
@@ -255,13 +252,6 @@ buttonTwo.addEventListener("click", () => {
   planeMaterial.needsUpdate = true;
 });
 
-buttonThree.addEventListener("click", () => {
-  planeMaterial.visible = true;
-  newTexture3 = textureLoader.load(pokemon3);
-  planeMaterial.map = newTexture3;
-  planeMaterial.needsUpdate = true;
-});
-
 //adding rayRaster
 
 canvas.addEventListener("click", onClick, false);
@@ -380,7 +370,7 @@ instantTrackerGroup.add(directionalLight);
 const ambientLight = new THREE.AmbientLight("white", 0.4);
 instantTrackerGroup.add(ambientLight);
 
-camera.position.set(0, 10, 1);
+camera.position.set(0, 10, 2);
 
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // const clock = new THREE.Clock();
