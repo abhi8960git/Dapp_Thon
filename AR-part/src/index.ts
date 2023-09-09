@@ -212,7 +212,7 @@ instantTrackerGroup.add(planeMesh);
 
 const planeMesh2 = new THREE.Mesh(
   new THREE.PlaneGeometry(20, 20),
-  new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, visible: false })
+  new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, visible: true })
 );
 
 planeMesh2.rotateX(-Math.PI / 2);

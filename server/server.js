@@ -4,38 +4,13 @@ const { Web3 } = require("web3");
 const ABI = require("./ABI.json");
 const { SpheronClient, ProtocolEnum } = require("@spheron/storage");
 const dotenv = require("dotenv");
-const multer = require("multer")
+const upload = require("./multer");
+
 const cors = require("cors");
 
-
-
-
-
-
-
-// Define the storage for uploaded files using multer.diskStorage
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    console.log('in_here_01',file)
-    // Specify the directory where uploaded files will be stored
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    console.log('in_here_02',file)
-    // Specify how files should be named
-    cb(null, Date.now() + '-' + file.originalname);
-  },
-});
-
-const upload = multer({ storage });
-
-
-
-
-
-
-
-
+const app = express();
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // keep the key secret as it can be paid
 const web3 = new Web3(
@@ -45,10 +20,6 @@ const contractAddress = "0x95190C52624363beD26DFcAA40f2Ae7893d3AE68";
 
 dotenv.config();
 const client = new SpheronClient({ token: process.env.TOKEN });
-
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
 
 const PORT = 5000;
 
@@ -155,22 +126,24 @@ app.post("/api/members", async (req, res) => {
 });
 
 // multer use case
+app.post("/upload/multer", upload.single("file"), async (req, res) => {
+  console.log("file:", req.files, " & ", req.file);
+  try {
+    const file = req.file;
 
+    if (!file) {
+      return res.status(400).json({ message: "No file provided" });
+    }
 
-
-app.post('/upload/multer', upload.single('file'), (req, res) => {
-  // Handle the uploaded file here
-  const uploadedFile = req.file;
-  console.log(uploadedFile)
-  if (!uploadedFile) {
-    return res.status(400).json({ message: 'No file uploaded' });
+    res.json({
+      message: "File uploaded successfully",
+      fileName: file.filename,
+    });
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    res.status(500).json({ message: "Error uploading file" });
   }
-
-  // You can access file information via uploadedFile object
-  res.json({ message: 'File uploaded successfully', file: uploadedFile });
 });
-
-
 
 app.get("/good", (req, res) => {
   console.log("ehloo");
