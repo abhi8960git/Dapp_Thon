@@ -216,3 +216,73 @@ body::after{
 .swiper-slide:nth-child(10n) {
   background-color: rgb(54, 94, 77);
 }
+
+/* button */
+.button {
+  width: 200px;
+  height: 60px;
+  border: 3px solid #f5841f;
+  border-radius: 45px;
+  transition: all 0.3s;
+  cursor: pointer;
+  background: transparent;
+  color:#f5841f;
+  font-size: 1.1em;
+  font-weight: 550;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.button:hover {
+  background: #f5841f;
+  color: white;
+  font-size: 1.3em;
+}
+
+
+/* Minting button nft creation  */
+
+.button-mint {
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: inline-block;
+  text-align: center;
+  font-weight: bold;
+  padding: 0.7em 2em;
+  border: 3px solid #F6CF57;
+  border-radius: 10px;
+  position: relative;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.1);
+  color: #F6CF57;
+  text-decoration: none;
+  transition: 0.3s ease all;
+  z-index: 1;
+}
+
+.button-mint:before {
+  transition: 0.5s all ease;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  right: 50%;
+  bottom: 0;
+  opacity: 0;
+  content: '';
+  background-color: #F6CF57;
+  z-index: -1;
+}
+
+.button-mint:hover, .button-mint:focus {
+  color: black;
+}
+
+.button-mint:hover:before, .button-mint:focus:before {
+  transition: 0.5s all ease;
+  left: 0;
+  right: 0;
+  opacity: 1;
+}
+
+.button-mint:active {
+  transform: scale(0.9);
+}

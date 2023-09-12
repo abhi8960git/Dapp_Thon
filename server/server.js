@@ -13,7 +13,7 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(bodyParser.json());
 // keep the key secret as it can be paid
 const web3 = new Web3(
   "https://lingering-tiniest-meadow.ethereum-sepolia.discover.quiknode.pro/612b4f1fdecd98605e21eb212c3a1a2f9c4c7496/"
@@ -155,19 +155,24 @@ app.get("/good", (req, res) => {
 // New route to handle JSON data
 app.post('/upload/json', (req, res) => {
   try {
-    const jsonData = req.body;
-    console.log(jsonData)
+    const { image, name, description } = req.body;
 
-    if (!jsonData) {
-      return res.status(400).json({ message: 'No JSON data provided' });
-    }
+    // if (!image || !name || !description) {
+    //   return res.status(400).json({ message: 'Incomplete data provided' });
+    // }
+    console.log(image, name, description);
+
+    const jsonData = {
+      image,
+      name,
+      description,
+    };
+
+    // Define the path to the local JSON file where you want to store the data
+    const filePath = 'data.json';
 
     // Convert JSON data to a string
     const jsonString = JSON.stringify(jsonData);
-    console.log(jsonString)
-
-    // Define the path to the local file where you want to store the JSON data
-    const filePath = 'data.json';
 
     // Write the JSON data to the local file
     fs.writeFileSync(filePath, jsonString);
@@ -180,6 +185,52 @@ app.post('/upload/json', (req, res) => {
     res.status(500).json({ message: 'Error saving JSON data' });
   }
 });
+
+// api endpoint for the json file upload on Spheron 
+app.get("/api/upload/json", async (req, res) => {
+  const name = "my-bucket";
+  const fileName = "data.json"; // Specify the name of the JSON file
+  const filePath = path.join(__dirname, fileName); // Construct the full path to the JSON file
+
+  try {
+    // Check if the JSON file exists
+    if (!fs.existsSync(filePath)) {
+      console.error("JSON file does not exist");
+      return res.status(400).json({ error: "JSON file does not exist" });
+    }
+
+    const { uploadId, bucketId, protocolLink, dynamicLinks, cid } =
+      await client.upload(filePath, {
+        protocol: ProtocolEnum.IPFS,
+        name,
+        onUploadInitiated: (uploadId) => {
+          console.log(`Upload with id ${uploadId} started...`);
+        },
+        onChunkUploaded: (uploadedSize, totalSize) => {
+          console.log(`Uploaded ${uploadedSize} of ${totalSize} Bytes.`);
+        },
+      });
+
+    // You can send a response to the frontend indicating success
+    if (cid) {
+      const fileData = fs.readFileSync(filePath);
+      res.status(200).json({
+        message: "Upload completed",
+        cid: cid,
+        fileName: fileName,
+        url: `ipfs://${cid}/${fileName}`,
+        // Send the file as base64 encoded data
+        // Other response properties if needed
+      });
+    }
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    // Send an error response to the frontend
+    res.status(500).json({ error: "Error uploading file" });
+  }
+});
+
+
 
 
 

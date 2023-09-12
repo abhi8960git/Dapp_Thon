@@ -25,7 +25,7 @@ export default function App() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
-  console.log("in_file_vrnft", file, name , description);
+  console.log("in_file_vrnft", file, name, description);
   const [ipfsLink, setIpfsLink] = useState(null);
   const [uploadState, setUploadState] = useState<
     "Uploading" | "Upload Failed" | "Uploaded" | "Upload"
@@ -84,157 +84,109 @@ export default function App() {
   };
 
   // Function to handle changes in the Name input field
-  const handleNameChange = (event:any) => {
+  const handleNameChange = (event: any) => {
     setName(event.target.value);
   };
 
   // Function to handle changes in the Description input field
-  const handleDescriptionChange = (event:any) => {
+  const handleDescriptionChange = (event: any) => {
     setDescription(event.target.value);
   };
 
   // Mint NFT Function
-const MintNFT = async()=>{
-  if( name.length < 0 && description.length < 0 ){
-      alert("data is empty");
+  const MintNFT = async () => {
+    if (!name || !description) {
+      alert("Data is empty");
       return;
-  }
-  try {
-
-    const jsonData = {
-      image:file,
-      name:name,
-      description:description
+    }
+  
+    try {
+      const jsonData = {
+        image: file,
+        name: name,
+        description: description,
+      };
+  
+      const response = await axios.post(
+        "http://localhost:5000/upload/json",
+        jsonData,
+        {
+          headers: {
+            "Content-Type": "application/json", // Set the content type to JSON
+          },
+        }
+      );
+  
+      console.log(response);
+  
+      // Introduce a 2-second delay before making the GET request
+      setTimeout(async () => {
+        try {
+          const data = await axios.get("http://localhost:5000/api/upload/json");
+          console.log(data);
+        } catch (error) {
+          console.log("get error", error);
+        }
+      }, 2000); // 2000 milliseconds = 2 seconds
+    } catch (error) {
+      console.error(error);
     }
 
-    const response = await axios.post('http://localhost:5000/upload/json', jsonData);
-    console.log(response)
-
-  } catch (error) {
-    console.log(error);
     
-  }
-}
+  };
+  
+  
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
-    <div className="flex justify-center items-center">
-      <Button onPress={onOpen} color="secondary">
-        Open Modal
-      </Button>
-      <Modal
-        backdrop="blur" // Apply blur and opacity to the backdrop
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        radius="md" // Adjust the radius for a smoother glass effect
-        classNames={{
-          body: "py-6 bg-opacity-30 backdrop-blur-md backdrop-filter backdrop-saturate-150", // Apply glassmorphic effect to the body
-          backdrop: "backdrop-opacity-40", // Adjust backdrop opacity
-          base: "border-[#292f46] bg-black bg-opacity-50 backdrop-blur-lg backdrop-filter backdrop-saturate-150", // Apply glassmorphic effect to the base
-          header:
-            "border-b-[1px] border-[#292f46] backdrop-blur-lg backdrop-filter backdrop-saturate-150", // Apply glassmorphic effect to the header
-          footer:
-            "border-t-[1px] border-[#292f46] backdrop-blur-lg backdrop-filter backdrop-saturate-150", // Apply glassmorphic effect to the footer
-          closeButton: "hover:bg-white/5 active:bg-white/10",
-        }}
-      >
-        <ModalContent className=" w-[700px] rounded-md ">
-          {(onClose) => (
-            <>
-              <ModalHeader className="">Mint Your NFT Here</ModalHeader>
-              <ModalBody>
-                <div className="">
-                  <div className="flex flex-col items-center mx-7 gap-4  ">
-                    {/* <Image src={logo} width={45} alt="logo"></Image>
-                      <p className="text-white">
-                        Screenshot from 2023-08-30 16-42-32.png
-                      </p> */}
-                    {!ipfsLink && <Dropzonee setFile={setFile}></Dropzonee>}
-
-                    {/* <p className='text-blue-500 p-6'>{file?.name}</p> */}
-
-                    {/* {file && !ipfsLink && (
-                        <button className="button mt-4" onClick={handleSubmit}>
-                          <span>Upload</span>
-                        </button>
-                      )} */}
-
-                
-                      <div className="form-item glassmorphism w-full mt-4">
-                        <input
-                          className="w-full"
-                          type="text"
-                          id="name" // Make sure to give each input a unique id
-                          autoComplete="off"
-                          required
-                          value={name} // Set the value to the state variable
-                          onChange={handleNameChange} // Handle changes using the function
-                        />
-                        <label>Name</label>
-                      </div>
-
-                      <div className="form-item glassmorphism w-full">
-                        <input
-                          className="w-full"
-                          type="text"
-                          id="description" // Make sure to give each input a unique id
-                          autoComplete="off"
-                          required
-                          value={description} // Set the value to the state variable
-                          onChange={handleDescriptionChange} // Handle changes using the function
-                        />
-                        <label>Description</label>
-                      </div>
-                 
-
-                  </div>
-                  <div className=" mx-8 text-xl uppercase flex  justify-evenly mt-7 ">
-                    <button
-                      className="flex items-center text-white gap-2 glassmorphism p-3   "
-                      // onClick={connectWallet}
-                    >
-                      {isWalletConnected() ? (
-                        <p>CONNECTED</p>
-                      ) : (
-                        <p> CONNECT WALLET </p>
-                      )}
-                      <Image width={30} src={metamask} alt="logo"></Image>
-                    </button>
-                    <button className="flex text-white gap-2  glassmorphism  p-3" onClick={MintNFT}>
-                      MINT YOUR NFT{" "}
-                      {/* <Image width={30} src={spheron} alt="logo"></Image> */}
-                    </button>
-                  </div>
-                </div>
-
-                {
-                  // <div className="glassmorphism mx-[140px] my-[80px] ">
-                  //   <div className="flex flex-col items-center m-6 text-white font tracking-[3px]">
-                  //     <p>Abhishek Kumar</p>
-                  //     <div className="h-[2px] w-full bg-white my-3"></div>
-                  //     <Image src={nft} alt="nft_card_Image"></Image>
-                  //     <div className="h-[2px] w-full bg-white my-3 font tracking-[3px] "></div>
-                  //     <p>Ox98347937859347594375984</p>
-                  //   </div>
-                  // </div>
-                }
-              </ModalBody>
-              <ModalFooter className="rounded-b-md">
-                <Button color="success" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button
-                  className="bg-[#6f4ef2] shadow-lg shadow-indigo-500/20"
-                  onPress={onClose}
-                >
-                  Action
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+    
+    <div className="flex justify-center flex-col items-center h-full mt-[50px] py-7">
+      <div className="glassmorphism w-[70%] flex justify-center items-center py-4 my-7 tracking-[3px] text-[40px] text-yellow-200 font "> Get Your NFT Here</div>
+    <div className="glassmorphism w-[70%] flex justify-center items-center py-[90px]">
+      <div className="w-[600px] flex justify-center flex-col">
+        <div className="flex flex-col items-center mx-7 gap-4">
+          {!ipfsLink && <Dropzonee setFile={setFile} />}
+  
+          <div className="form-item glassmorphism w-full mt-4">
+            <input
+              className="w-full"
+              type="text"
+              id="name"
+              autoComplete="off"
+              required
+              value={name}
+              onChange={handleNameChange}
+            />
+            <label>Name</label>
+          </div>
+  
+          <div className="form-item glassmorphism w-full">
+            <input
+              className="w-full"
+              type="text"
+              id="description"
+              autoComplete="off"
+              required
+              value={description}
+              onChange={handleDescriptionChange}
+            />
+            <label>Description</label>
+          </div>
+        </div>
+        <div className="mx-8 text-xl uppercase flex justify-evenly mt-7">
+        
+          <button
+            className="flex text-white gap-2 glassmorphism p-3 button-mint "
+            onClick={MintNFT}
+          >
+            MINT YOUR NFT
+            {/* <Image width={30} src={spheron} alt="logo" /> */}
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
+  
   );
 }
