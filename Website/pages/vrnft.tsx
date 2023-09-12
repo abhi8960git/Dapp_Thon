@@ -19,33 +19,33 @@ import Web3 from "web3";
 import Dropzonee from "@/components/Dropzone";
 import axios from "axios";
 
-
-
 export default function App() {
   const [accounts, setAccounts] = useState([]);
   const [file, setFile] = useState(null);
-  console.log('in_file_vrnft',file);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+
+  console.log("in_file_vrnft", file, name , description);
   const [ipfsLink, setIpfsLink] = useState(null);
   const [uploadState, setUploadState] = useState<
     "Uploading" | "Upload Failed" | "Uploaded" | "Upload"
   >("Upload");
 
+  // wallet function
 
-  // wallet function 
-
-  const connectWallet = async () => {
-    if (window.ethereum) {
-      try {
-        await window.ethereum.request({ method: "eth_requestAccounts" });
-        const web3 = new Web3(window.ethereum);
-        const accounts = await web3.eth.getAccounts();
-        setAccounts(accounts);
-        console.log(accounts);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
+  // const connectWallet = async () => {
+  //   if (window.ethereum) {
+  //     try {
+  //       await window.ethereum.request({ method: "eth_requestAccounts" });
+  //       const web3 = new Web3(window.ethereum);
+  //       const accounts = await web3.eth.getAccounts();
+  //       setAccounts(accounts);
+  //       console.log(accounts);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // };
 
   const isWalletConnected = () => {
     return accounts.length > 0;
@@ -83,24 +83,38 @@ export default function App() {
     }
   };
 
+  // Function to handle changes in the Name input field
+  const handleNameChange = (event:any) => {
+    setName(event.target.value);
+  };
 
-  // Mint NFT Function 
+  // Function to handle changes in the Description input field
+  const handleDescriptionChange = (event:any) => {
+    setDescription(event.target.value);
+  };
 
-  const MintNFT = async()=>{
+  // Mint NFT Function
+const MintNFT = async()=>{
+  if( name.length < 0 && description.length < 0 ){
+      alert("data is empty");
+      return;
+  }
+  try {
 
-
-    try {
-
-      
-    } catch (error) {
-      
+    const jsonData = {
+      image:file,
+      name:name,
+      description:description
     }
 
+    const response = await axios.post('http://localhost:5000/upload/json', jsonData);
+    console.log(response)
+
+  } catch (error) {
+    console.log(error);
+    
   }
-
-
-
-
+}
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -125,76 +139,85 @@ export default function App() {
           closeButton: "hover:bg-white/5 active:bg-white/10",
         }}
       >
-        <ModalContent className=" w-[70%] rounded-md ">
+        <ModalContent className=" w-[700px] rounded-md ">
           {(onClose) => (
             <>
               <ModalHeader className="">Mint Your NFT Here</ModalHeader>
               <ModalBody>
-                {true ? (
-                  <div>
-                    <div className="flex items-center mx-7 glassmorphism ">
-                      {/* <Image src={logo} width={45} alt="logo"></Image>
+                <div className="">
+                  <div className="flex flex-col items-center mx-7 gap-4  ">
+                    {/* <Image src={logo} width={45} alt="logo"></Image>
                       <p className="text-white">
                         Screenshot from 2023-08-30 16-42-32.png
                       </p> */}
-                      {!ipfsLink && (
-                        <Dropzonee setFile={setFile}></Dropzonee>
-                      )}
+                    {!ipfsLink && <Dropzonee setFile={setFile}></Dropzonee>}
 
-                      {/* <p className='text-blue-500 p-6'>{file?.name}</p> */}
+                    {/* <p className='text-blue-500 p-6'>{file?.name}</p> */}
 
-                     
-                      {/* {file && !ipfsLink && (
+                    {/* {file && !ipfsLink && (
                         <button className="button mt-4" onClick={handleSubmit}>
                           <span>Upload</span>
                         </button>
                       )} */}
 
-                    </div>
-                    <div className=" mx-8 text-xl uppercase flex  justify-evenly mt-7 ">
-                      <button
-                        className="flex items-center text-white gap-2 glassmorphism p-3   "
-                        onClick={connectWallet}
-                      >
-                        {isWalletConnected() ? (
-                          <p>CONNECTED</p>
-                        ) : (
-                          <p> CONNECT WALLET </p>
-                        )}
-                        <Image width={30} src={metamask} alt="logo"></Image>
-                      </button>
-                      <button className="flex text-white gap-2  glassmorphism  p-3">
-                        UPLOAD TO IPFS{" "}
-                        <Image width={30} src={spheron} alt="logo"></Image>
-                      </button>
-                    </div>
+                
+                      <div className="form-item glassmorphism w-full mt-4">
+                        <input
+                          className="w-full"
+                          type="text"
+                          id="name" // Make sure to give each input a unique id
+                          autoComplete="off"
+                          required
+                          value={name} // Set the value to the state variable
+                          onChange={handleNameChange} // Handle changes using the function
+                        />
+                        <label>Name</label>
+                      </div>
+
+                      <div className="form-item glassmorphism w-full">
+                        <input
+                          className="w-full"
+                          type="text"
+                          id="description" // Make sure to give each input a unique id
+                          autoComplete="off"
+                          required
+                          value={description} // Set the value to the state variable
+                          onChange={handleDescriptionChange} // Handle changes using the function
+                        />
+                        <label>Description</label>
+                      </div>
+                 
+
                   </div>
-                ) : (
-                  <div className="">
-                    <div className="flex items-center mx-7 glassmorphism ">
-                      <Image src={link} width={45} alt="logo"></Image>
-                      <p className="text-white">
-                        Screenshot from 2023-08-30 16-42-32.png
-                      </p>
-                    </div>
-                    <div className="mt-5 mx-7 flex justify-center items-center">
-                      <button className="flex text-white gap-2  glassmorphism  p-3 font-[700]">
-                        MINT YOUR NFT{" "}
-                      </button>
-                    </div>
+                  <div className=" mx-8 text-xl uppercase flex  justify-evenly mt-7 ">
+                    <button
+                      className="flex items-center text-white gap-2 glassmorphism p-3   "
+                      // onClick={connectWallet}
+                    >
+                      {isWalletConnected() ? (
+                        <p>CONNECTED</p>
+                      ) : (
+                        <p> CONNECT WALLET </p>
+                      )}
+                      <Image width={30} src={metamask} alt="logo"></Image>
+                    </button>
+                    <button className="flex text-white gap-2  glassmorphism  p-3" onClick={MintNFT}>
+                      MINT YOUR NFT{" "}
+                      {/* <Image width={30} src={spheron} alt="logo"></Image> */}
+                    </button>
                   </div>
-                )}
+                </div>
 
                 {
-                  <div className="glassmorphism mx-[140px] my-[80px] ">
-                    <div className="flex flex-col items-center m-6 text-white font tracking-[3px]">
-                      <p>Abhishek Kumar</p>
-                      <div className="h-[2px] w-full bg-white my-3"></div>
-                      <Image src={nft} alt="nft_card_Image"></Image>
-                      <div className="h-[2px] w-full bg-white my-3 font tracking-[3px] "></div>
-                      <p>Ox98347937859347594375984</p>
-                    </div>
-                  </div>
+                  // <div className="glassmorphism mx-[140px] my-[80px] ">
+                  //   <div className="flex flex-col items-center m-6 text-white font tracking-[3px]">
+                  //     <p>Abhishek Kumar</p>
+                  //     <div className="h-[2px] w-full bg-white my-3"></div>
+                  //     <Image src={nft} alt="nft_card_Image"></Image>
+                  //     <div className="h-[2px] w-full bg-white my-3 font tracking-[3px] "></div>
+                  //     <p>Ox98347937859347594375984</p>
+                  //   </div>
+                  // </div>
                 }
               </ModalBody>
               <ModalFooter className="rounded-b-md">

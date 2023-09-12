@@ -23,7 +23,7 @@
         uploadButton.addEventListener("click", () => {
           const formData = new FormData(uploadForm);
 
-          fetch("http://localhost:5000/upload/multer", {
+          fetch("http://localhost:5000/upload/file", {
             method: "POST",
             body: formData,
           })

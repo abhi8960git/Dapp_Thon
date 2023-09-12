@@ -5,6 +5,8 @@ const ABI = require("./ABI.json");
 const { SpheronClient, ProtocolEnum } = require("@spheron/storage");
 const dotenv = require("dotenv");
 const upload = require("./multer");
+const fs = require('fs')
+const path = require('path')
 
 const cors = require("cors");
 
@@ -40,63 +42,63 @@ const FetchNFT = async (account) => {
   }
 };
 
-app.post("/api/mint", async (req, res) => {
-  const tokenURI = req.body.tokenURI;
-  const account = req.body.account;
 
-  try {
-    const tokenId = await contract.methods
-      .MintItem(tokenURI)
-      .send({ from: account });
-    res.send({ tokenId });
-  } catch (error) {
-    res.send(error);
-  }
-});
+
 
 // This api end point will upload out file imag path to ipfs (Spheron Storage ) and return the ipfs uploaded url
-
-app.post("/api/upload", async (req, res) => {
+app.get("/api/upload", async (req, res) => {
   const name = "my-bucket";
+  const folderPath = "uploads"; // Replace with your folder path
 
-  const { filePath } = req.body;
-
-  const lastIndex = filePath.lastIndexOf("/");
-  const fileName = filePath.substring(lastIndex + 1);
-
-  let currentlyUploaded = 0;
-
-  try {
-    const { uploadId, bucketId, protocolLink, dynamicLinks, cid } =
-      await client.upload(filePath, {
-        protocol: ProtocolEnum.IPFS,
-        name,
-        onUploadInitiated: (uploadId) => {
-          console.log(`Upload with id ${uploadId} started...`);
-        },
-        onChunkUploaded: (uploadedSize, totalSize) => {
-          currentlyUploaded += uploadedSize;
-          console.log(`Uploaded ${currentlyUploaded} of ${totalSize} Bytes.`);
-        },
-      });
-
-    // You can send a response to the frontend indicating success
-    if (cid) {
-      res.redirect(200).json({
-        message: "Upload completed",
-        // uploadId,
-        // bucketId,
-        // protocolLink,
-        // dynamicLinks,
-        // cid,
-        link: `https://${cid}.ipfs.sphn.link/${fileName}`,
-      });
+  // Read the files in the folder
+  fs.readdir(folderPath, async(err, files) => {
+    if (err) {
+      console.error("Error reading folder:", err);
+      return res.status(500).json({ error: "Error reading folder" });
     }
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    // Send an error response to the frontend
-    res.sendStatus(500).json({ error: "Error uploading file" });
-  }
+
+    // Check if there are any files in the folder
+    if (files.length === 0) {
+      console.error("No files found in folder");
+      return res.status(400).json({ error: "No files found in folder" });
+    }
+
+    // Select the first file in the folder
+    const fileName = files[files.length-1];
+    const filePath = path.join(folderPath, fileName);
+    console.log(files)
+
+    try {
+      const { uploadId, bucketId, protocolLink, dynamicLinks, cid } =
+        await client.upload(filePath, {
+          protocol: ProtocolEnum.IPFS,
+          name,
+          onUploadInitiated: (uploadId) => {
+            console.log(`Upload with id ${uploadId} started...`);
+          },
+          onChunkUploaded: (uploadedSize, totalSize) => {
+            console.log(`Uploaded ${uploadedSize} of ${totalSize} Bytes.`);
+          },
+        });
+
+      // You can send a response to the frontend indicating success
+      if (cid) {
+        const fileData = fs.readFileSync(filePath);
+        res.status(200).json({
+          message: "Upload completed",
+          cid: cid,
+          fileName ,
+          url:`https://${cid}.ipfs.sphn.link/${fileName}`
+          // Send the file as base64 encoded data
+          // Other response properties if needed
+        });
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      // Send an error response to the frontend
+      res.status(500).json({ error: "Error uploading file" });
+    }
+  });
 });
 
 // this api end point is to get the NFT count of a user having public address
@@ -126,7 +128,7 @@ app.post("/api/members", async (req, res) => {
 });
 
 // multer use case
-app.post("/upload/multer", upload.single("file"), async (req, res) => {
+app.post("/upload/file", upload.single("file"), async (req, res) => {
   console.log("file:", req.files, " & ", req.file);
   try {
     const file = req.file;
@@ -139,7 +141,7 @@ app.post("/upload/multer", upload.single("file"), async (req, res) => {
       message: "File uploaded successfully",
       fileName: file.filename,
     });
-  } catch (error) {
+  } catch (error) { 
     console.error("Error uploading file:", error);
     res.status(500).json({ message: "Error uploading file" });
   }
@@ -148,6 +150,39 @@ app.post("/upload/multer", upload.single("file"), async (req, res) => {
 app.get("/good", (req, res) => {
   console.log("ehloo");
 });
+
+
+// New route to handle JSON data
+app.post('/upload/json', (req, res) => {
+  try {
+    const jsonData = req.body;
+    console.log(jsonData)
+
+    if (!jsonData) {
+      return res.status(400).json({ message: 'No JSON data provided' });
+    }
+
+    // Convert JSON data to a string
+    const jsonString = JSON.stringify(jsonData);
+    console.log(jsonString)
+
+    // Define the path to the local file where you want to store the JSON data
+    const filePath = 'data.json';
+
+    // Write the JSON data to the local file
+    fs.writeFileSync(filePath, jsonString);
+
+    res.json({
+      message: 'JSON data saved successfully',
+    });
+  } catch (error) {
+    console.error('Error saving JSON data:', error);
+    res.status(500).json({ message: 'Error saving JSON data' });
+  }
+});
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Server listining to ${PORT}`);

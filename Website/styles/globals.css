@@ -112,3 +112,107 @@ body::after{
   fill: white;
   transform: scale(1.2);
 }
+
+
+
+/* input animation css */
+
+.form-item{
+  position: relative;
+  margin-bottom: 15px
+}
+.form-item input{
+  display: block;
+  height: 40px;
+  background: transparent;
+  /* border: solid 1px #ccc; */
+  outline: none;
+  transition: all .3s ease;
+  padding: 0 15px;
+  color: rgba(255, 255, 255, 0.708);
+  
+}
+.form-item input:focus{
+  /* border-color: blue */
+}
+.form-item label{
+  position: absolute;
+  cursor: text;
+  z-index: 2;
+  top: 8px;
+  left: 10px;
+  font-size: 17px;
+  font-weight: bold;
+  /* background: #fff; */
+  padding: 0 10px;
+  color:rgba(255, 255, 255, 0.541);
+  transition: all .3s ease
+}
+.form-item input:focus + label,
+.form-item input:valid + label{
+  font-size: 17px;
+  top: -15px;
+  /* background:black; */
+}
+.form-item input:focus + label{
+  /* color: blue */
+}
+
+/* Swiper css */
+
+.swiper {
+  width: 400px;
+  /* height: 320px; */
+  margin: 0;
+  padding: 0;
+}
+
+.swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.swiper-slide:nth-child(1n) {
+  background-color: rgb(206, 17, 17);
+}
+
+.swiper-slide:nth-child(2n) {
+  background-color: rgb(0, 140, 255);
+}
+
+.swiper-slide:nth-child(3n) {
+  background-color: rgb(10, 184, 111);
+}
+
+.swiper-slide:nth-child(4n) {
+  background-color: rgb(211, 122, 7);
+}
+
+.swiper-slide:nth-child(5n) {
+  background-color: rgb(118, 163, 12);
+}
+
+.swiper-slide:nth-child(6n) {
+  background-color: rgb(180, 10, 47);
+}
+
+.swiper-slide:nth-child(7n) {
+  background-color: rgb(35, 99, 19);
+}
+
+.swiper-slide:nth-child(8n) {
+  background-color: rgb(0, 68, 255);
+}
+
+.swiper-slide:nth-child(9n) {
+  background-color: rgb(218, 12, 218);
+}
+
+.swiper-slide:nth-child(10n) {
+  background-color: rgb(54, 94, 77);
+}
