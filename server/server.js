@@ -18,14 +18,14 @@ app.use(bodyParser.json());
 const web3 = new Web3(
   "https://lingering-tiniest-meadow.ethereum-sepolia.discover.quiknode.pro/612b4f1fdecd98605e21eb212c3a1a2f9c4c7496/"
 );
-const contractAddress = "0x95190C52624363beD26DFcAA40f2Ae7893d3AE68";
+const contractAddress = "0x54bdf659cC2925f87729d2EA7C03d66db7d5934C";
 
 dotenv.config();
 const client = new SpheronClient({ token: process.env.TOKEN });
 
 const PORT = 5000;
 
-// contract address
+// contract address'
 
 const contract = new web3.eth.Contract(ABI, contractAddress);
 // console.log(contract.methods);
@@ -112,11 +112,12 @@ app.post("/api/members", async (req, res) => {
     const nfts = Number(numNFTs);
     console.log(nfts);
 
-    if (nfts > 0) {
-      res.status(200).json({ status: 200, nfts });
-    } else {
-      res.status(400).json({ status: 400, nfts });
-    }
+    // if (nfts > 0) {
+    //   res.status(200).json({ status: 200, nfts });
+    // } else {
+    //   res.status(400).json({ status: 400, nfts });
+    // }
+    res.status(200).send({nfts})
     // console.log( typeof numNFTs)
     // res.status(200).send(numNFTs.toString())
   } catch (error) {

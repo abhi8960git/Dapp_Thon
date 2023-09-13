@@ -11,9 +11,11 @@ interface Text{
 
 
 const Card = (props:any) => {
-  const {text, image} = props;
+  const {text, image } = props;
   const router = useRouter();
   const handleClick = ()=>{
+  
+  
     router.push('/vrnft')
   }
   return (
