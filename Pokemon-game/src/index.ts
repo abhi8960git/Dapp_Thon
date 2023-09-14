@@ -11,6 +11,7 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import Stats from "three/examples/jsm/libs/stats.module";
 
 const pokeLand = new URL("../assets/poke.glb", import.meta.url).href;
+const player = new URL("../assets/walk animation.glb", import.meta.url).href;
 
 import "./index.css";
 
@@ -29,6 +30,11 @@ const manager = new ZapparThree.LoadingManager();
 
 // ==================== Selectings dom elemets ====================
 const canvas = document.querySelector("canvas.webgl");
+// Reference individual buttons
+const moveForwardButton = document.getElementById("moveForward");
+const moveLeftButton = document.getElementById("moveLeft");
+const moveRightButton = document.getElementById("moveRight");
+const moveBackwardButton = document.getElementById("moveBackward");
 
 // Construct our ThreeJS renderer and scene as usual
 const renderer = new THREE.WebGLRenderer({
@@ -89,6 +95,47 @@ gltfLoader.load(
     console.log("An error ocurred loading the GLTF model", err);
   }
 );
+let mixer: THREE.AnimationMixer;
+let modelReady = false;
+const animationActions: THREE.AnimationAction[] = [];
+let activeAction: THREE.AnimationAction;
+let lastAction: THREE.AnimationAction;
+
+gltfLoader.load(
+  player,
+  (gltf) => {
+    console.log(gltf, "pickachuu");
+    gltf.scene.scale.set(1, 1, 1);
+    gltf.scene.position.y = 0;
+    gltf.scene.position.z = -4;
+    gltf.scene.position.x = 2;
+    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+
+    mixer = new THREE.AnimationMixer(gltf.scene);
+
+    // Now the model has been loaded, we can add it to our instant_tracker_group
+
+    if (gltf.animations.length > 0) {
+      gltf.animations.forEach((a: THREE.AnimationClip, i) => {
+        console.log(a, "animation_here");
+
+        animationActions.push(mixer.clipAction((gltf as any).animations[i]));
+      });
+    } else {
+      continue;
+    }
+
+    instantTrackerGroup.add(gltf.scene);
+
+    modelReady = true;
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  (err) => {
+    console.log("An error ocurred loading the GLTF model", err);
+  }
+);
 
 //------------------MODEL LOADING FINISHED---------------------
 
@@ -119,6 +166,10 @@ gltfLoader.load(
 //     }
 //   });
 // }
+
+//===============ANIMATION LOGIC HERE ==================
+
+console.log(animationActions, "animations");
 
 //----------LIGHTING-----------
 
