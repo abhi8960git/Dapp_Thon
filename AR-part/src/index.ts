@@ -13,7 +13,7 @@ import { GUI } from "dat.gui";
 
 let isPokeballRotating = false;
 
-const model = new URL("../assets/pikachu.glb", import.meta.url).href;
+const model = new URL("../assets/pikachu2.glb", import.meta.url).href;
 const fbxModel = new URL("../assets/thrill.fbx", import.meta.url).href;
 const pokemon1 = new URL("../assets/peakpx-3.jpg", import.meta.url).href;
 const pokemon2 = new URL("../assets/peakpx-2.jpg", import.meta.url).href;
@@ -27,6 +27,7 @@ const pokeball = new URL(
 const frame = new URL("../assets/picture_frame.glb", import.meta.url).href;
 
 import "./index.css";
+import { formToJSON } from "axios";
 
 if (ZapparThree.browserIncompatible()) {
   // The browserIncompatibleUI() function shows a full-page dialog that informs the user
@@ -44,10 +45,10 @@ const manager = new ZapparThree.LoadingManager();
 // ==================== Selectings dom elemets ====================
 const canvas = document.querySelector("canvas.webgl");
 const button_six = document.querySelector(".six");
-const buttonFour = document.querySelector(".four");
+const forwardButton = document.querySelector(".forward");
+const jumpButton = document.querySelector(".jump");
 const buttonOne = document.getElementById("button1");
 const buttonTwo = document.getElementById("button2");
-const buttonThree = document.getElementById("button3");
 
 // Construct our ThreeJS renderer and scene as usual
 const renderer = new THREE.WebGLRenderer({
@@ -144,9 +145,9 @@ gltfLoader.load(
 gltfLoader.load(
   model,
   (gltf) => {
-    console.log(gltf);
-    gltf.scene.scale.set(5, 5, 5);
-    gltf.scene.position.y = 1;
+    console.log(gltf, "pickachuu");
+    gltf.scene.scale.set(3, 3, 3);
+    gltf.scene.position.y = 0;
     gltf.scene.position.z = -4;
     gltf.scene.position.x = 2;
     const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
@@ -212,7 +213,7 @@ instantTrackerGroup.add(planeMesh);
 
 const planeMesh2 = new THREE.Mesh(
   new THREE.PlaneGeometry(20, 20),
-  new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, visible: true })
+  new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, visible: false })
 );
 
 planeMesh2.rotateX(-Math.PI / 2);
@@ -304,6 +305,39 @@ function onClick(event: MouseEvent) {
 }
 
 // console.log(sceneMeshes);
+
+// Add event listeners to the buttons for interaction
+forwardButton.addEventListener("click", () => {
+  // Trigger the "Walking" animation
+  playAnimation("Walking");
+});
+
+jumpButton.addEventListener("click", () => {
+  // Trigger the "Jump" animation
+  playAnimation("Jump");
+});
+
+function playAnimation(animationName) {
+  // Find the animation action by name
+  const action = animationActions.find(
+    (action) => action._clip.name === animationName
+  );
+
+  if (action) {
+    // Check if the action is not already playing to prevent interruptions
+    if (action !== activeAction) {
+      // Fade out the currently active action and fade in the new action
+      if (activeAction) {
+        activeAction.fadeOut(0.2); // Adjust the fade duration as needed
+      }
+      action.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(0.2); // Adjust the fade duration as needed
+      action.play();
+
+      // Set the new action as the active action
+      activeAction = action;
+    }
+  }
+}
 
 // creating nft
 
