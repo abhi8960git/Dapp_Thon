@@ -9,6 +9,7 @@ import * as ZapparThree from "@zappar/zappar-threejs";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import Stats from "three/examples/jsm/libs/stats.module";
+import * as TWEEN from "tween.js";
 
 const pokeLand = new URL("../assets/poke.glb", import.meta.url).href;
 const player = new URL("../assets/walk animation.glb", import.meta.url).href;
@@ -211,29 +212,50 @@ const rotationAngle = Math.PI / 4; // You can adjust this value
 // Function to move the model forward
 function moveForward() {
   if (modelReady) {
-    console.log(animationActions[0], playerModel, "animations");
     const modelPosition = playerModel.position.clone();
-    const forwardDirection = new THREE.Vector3(0, 0, 1); // Assuming forward is along the negative Z-axis
+    const forwardDirection = new THREE.Vector3(0, 0, 1);
+    forwardDirection.applyQuaternion(playerModel.quaternion);
 
-    forwardDirection.applyQuaternion(playerModel.quaternion); // Apply model's rotation
+    const targetPosition = modelPosition
+      .clone()
+      .add(forwardDirection.multiplyScalar(movementStep));
 
-    modelPosition.add(forwardDirection.multiplyScalar(movementStep));
-    playerModel.position.copy(modelPosition);
-    setAction(animationActions[0]);
+    // Create a new tween for smooth movement
+    new TWEEN.Tween(playerModel.position)
+      .to(targetPosition, 400) // Adjust duration as needed
+      .onUpdate(() => {
+        // This function will be called during the animation
+        setAction(animationActions[0]);
+      })
+      .start();
   }
 }
 
 // Function to move the model backward
 function moveBackward() {
   if (modelReady) {
-    const modelPosition = playerModel.position.clone();
-    const backwardDirection = new THREE.Vector3(0, 0, -1); // Assuming backward is along the positive Z-axis
+    const currentRotation = playerModel.rotation.y;
+    const targetRotation = currentRotation + Math.PI; // Turn 180 degrees
 
-    backwardDirection.applyQuaternion(playerModel.quaternion); // Apply model's rotation
+    new TWEEN.Tween(playerModel.rotation)
+      .to({ y: targetRotation }, 900) // Adjust duration as needed
+      .onComplete(() => {
+        const modelPosition = playerModel.position.clone();
+        const forwardDirection = new THREE.Vector3(0, 0, 1);
+        forwardDirection.applyQuaternion(playerModel.quaternion);
 
-    modelPosition.add(backwardDirection.multiplyScalar(movementStep));
-    playerModel.position.copy(modelPosition);
-    setAction(animationActions[0]);
+        const targetPosition = modelPosition
+          .clone()
+          .add(forwardDirection.multiplyScalar(movementStep));
+
+        new TWEEN.Tween(playerModel.position)
+          .to(targetPosition, 400) // Adjust duration as needed
+          .onUpdate(() => {
+            setAction(animationActions[0]);
+          })
+          .start();
+      })
+      .start();
   }
 }
 
@@ -241,9 +263,27 @@ function moveBackward() {
 function moveLeft() {
   if (modelReady) {
     const currentRotation = playerModel.rotation.y;
-    playerModel.rotation.y = currentRotation - rotationAngle;
+    const targetRotation = currentRotation + rotationAngle;
 
-    setAction(animationActions[0]);
+    new TWEEN.Tween(playerModel.rotation)
+      .to({ y: targetRotation }, 500) // Adjust duration as needed
+      .onComplete(() => {
+        const modelPosition = playerModel.position.clone();
+        const forwardDirection = new THREE.Vector3(0, 0, 1);
+        forwardDirection.applyQuaternion(playerModel.quaternion);
+
+        const targetPosition = modelPosition
+          .clone()
+          .add(forwardDirection.multiplyScalar(movementStep));
+
+        new TWEEN.Tween(playerModel.position)
+          .to(targetPosition, 400) // Adjust duration as needed
+          .onUpdate(() => {
+            setAction(animationActions[0]);
+          })
+          .start();
+      })
+      .start();
   }
 }
 
@@ -251,9 +291,27 @@ function moveLeft() {
 function moveRight() {
   if (modelReady) {
     const currentRotation = playerModel.rotation.y;
-    playerModel.rotation.y = currentRotation + rotationAngle;
+    const targetRotation = currentRotation - rotationAngle;
 
-    setAction(animationActions[0]);
+    new TWEEN.Tween(playerModel.rotation)
+      .to({ y: targetRotation }, 500) // Adjust duration as needed
+      .onComplete(() => {
+        const modelPosition = playerModel.position.clone();
+        const forwardDirection = new THREE.Vector3(0, 0, 1);
+        forwardDirection.applyQuaternion(playerModel.quaternion);
+
+        const targetPosition = modelPosition
+          .clone()
+          .add(forwardDirection.multiplyScalar(movementStep));
+
+        new TWEEN.Tween(playerModel.position)
+          .to(targetPosition, 400) // Adjust duration as needed
+          .onUpdate(() => {
+            setAction(animationActions[0]);
+          })
+          .start();
+      })
+      .start();
   }
 }
 
@@ -358,6 +416,7 @@ function render(): void {
   renderer.render(scene, camera);
   // controls.update(0.01);
   if (modelReady) mixer.update(clock.getDelta());
+  TWEEN.update();
 
   // camera.position.y += 1;
   // console.log(camera.position);

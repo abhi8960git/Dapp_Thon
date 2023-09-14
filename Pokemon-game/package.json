@@ -14,7 +14,8 @@
     "@zappar/zappar-threejs": "2.0.1",
     "dat.gui": "^0.7.9",
     "lil-gui": "^0.18.1",
-    "three": "^0.137.0"
+    "three": "^0.137.0",
+    "tween.js": "^16.6.0"
   },
   "devDependencies": {
     "@types/three": "^0.138.0",
