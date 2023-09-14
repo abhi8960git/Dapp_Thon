@@ -76,13 +76,28 @@ scene.add(instantTrackerGroup);
 // ==================== Creating custom movement using rayCaster ====================
 
 const gltfLoader = new GLTFLoader(manager);
+let playerModel;
 //------------------MODEL LOADING STARTED---------------------
 // loading models
 
 gltfLoader.load(
   pokeLand,
   (gltf) => {
-    model1 = gltf.scene;
+    gltf.scene.traverse(function (child) {
+      if ((child as THREE.Mesh).isMesh) {
+        const m = child as THREE.Mesh;
+        m.receiveShadow = true;
+        m.castShadow = true;
+      }
+      if ((child as THREE.Light).isLight) {
+        const l = child as THREE.SpotLight;
+        l.castShadow = true;
+        l.shadow.bias = -0.003;
+        l.shadow.mapSize.width = 2048;
+        l.shadow.mapSize.height = 2048;
+      }
+    });
+
     console.log("tree", gltf);
     gltf.scene.scale.set(1, 1, 1);
 
@@ -104,11 +119,26 @@ let lastAction: THREE.AnimationAction;
 gltfLoader.load(
   player,
   (gltf) => {
+    playerModel = gltf.scene;
+    gltf.scene.traverse(function (child) {
+      if ((child as THREE.Mesh).isMesh) {
+        const m = child as THREE.Mesh;
+        m.receiveShadow = true;
+        m.castShadow = true;
+        m.visible = true;
+      }
+      if ((child as THREE.Light).isLight) {
+        const l = child as THREE.SpotLight;
+        l.castShadow = true;
+        l.shadow.bias = -0.003;
+        l.shadow.mapSize.width = 2048;
+        l.shadow.mapSize.height = 2048;
+      }
+    });
     console.log(gltf, "pickachuu");
     gltf.scene.scale.set(1, 1, 1);
     gltf.scene.position.y = 0;
-    gltf.scene.position.z = -4;
-    gltf.scene.position.x = 2;
+
     const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 
     mixer = new THREE.AnimationMixer(gltf.scene);
@@ -120,9 +150,8 @@ gltfLoader.load(
         console.log(a, "animation_here");
 
         animationActions.push(mixer.clipAction((gltf as any).animations[i]));
+        (gltf as any).animations[i].tracks.shift(); //delete the specific track that moves the object forward while running
       });
-    } else {
-      continue;
     }
 
     instantTrackerGroup.add(gltf.scene);
@@ -169,7 +198,75 @@ gltfLoader.load(
 
 //===============ANIMATION LOGIC HERE ==================
 
-console.log(animationActions, "animations");
+// Add event listeners to the buttons
+moveForwardButton.addEventListener("click", moveForward);
+moveLeftButton.addEventListener("click", moveLeft);
+moveRightButton.addEventListener("click", moveRight);
+moveBackwardButton.addEventListener("click", moveBackward);
+
+// Define movement step size
+const movementStep = 1; // You can adjust this value
+const rotationAngle = Math.PI / 4; // You can adjust this value
+
+// Function to move the model forward
+function moveForward() {
+  if (modelReady) {
+    console.log(animationActions[0], playerModel, "animations");
+    const modelPosition = playerModel.position.clone();
+    const forwardDirection = new THREE.Vector3(0, 0, 1); // Assuming forward is along the negative Z-axis
+
+    forwardDirection.applyQuaternion(playerModel.quaternion); // Apply model's rotation
+
+    modelPosition.add(forwardDirection.multiplyScalar(movementStep));
+    playerModel.position.copy(modelPosition);
+    setAction(animationActions[0]);
+  }
+}
+
+// Function to move the model backward
+function moveBackward() {
+  if (modelReady) {
+    const modelPosition = playerModel.position.clone();
+    const backwardDirection = new THREE.Vector3(0, 0, -1); // Assuming backward is along the positive Z-axis
+
+    backwardDirection.applyQuaternion(playerModel.quaternion); // Apply model's rotation
+
+    modelPosition.add(backwardDirection.multiplyScalar(movementStep));
+    playerModel.position.copy(modelPosition);
+    setAction(animationActions[0]);
+  }
+}
+
+// Function to move the model left
+function moveLeft() {
+  if (modelReady) {
+    const currentRotation = playerModel.rotation.y;
+    playerModel.rotation.y = currentRotation - rotationAngle;
+
+    setAction(animationActions[0]);
+  }
+}
+
+// Function to move the model right
+function moveRight() {
+  if (modelReady) {
+    const currentRotation = playerModel.rotation.y;
+    playerModel.rotation.y = currentRotation + rotationAngle;
+
+    setAction(animationActions[0]);
+  }
+}
+
+const setAction = (toAction: THREE.AnimationAction) => {
+  lastAction = activeAction;
+  activeAction = toAction;
+
+  // lastAction.fadeOut(1);
+  activeAction.reset();
+  // activeAction.fadeIn(1);
+  activeAction.play();
+  activeAction.fadeOut(1);
+};
 
 //----------LIGHTING-----------
 
@@ -260,7 +357,7 @@ function render(): void {
   // Draw the ThreeJS scene in the usual way, but using the Zappar camera
   renderer.render(scene, camera);
   // controls.update(0.01);
-  delta = clock.getDelta();
+  if (modelReady) mixer.update(clock.getDelta());
 
   // camera.position.y += 1;
   // console.log(camera.position);
