@@ -5,9 +5,9 @@ import Image from 'next/image'
 const PokeCard = () => {
   return (
    
-    <div className="glassmorphism mx-[14px] my-[14px] ">
+    <div className="  glassmorphism mx-[14px] my-[14px] ">
     <div className="flex flex-col items-center m-6 text-white font tracking-[3px]">
-      <p>Abhishek Kumar</p>
+      <p>Charizard</p>
       <div className="h-[2px] w-full bg-white my-3"></div>
      <Image src={nft} alt="nft_card_Image"></Image>
       <div className="h-[2px] w-full bg-white my-3 font tracking-[3px] "></div>

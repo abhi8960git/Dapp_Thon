@@ -8,7 +8,7 @@ const Dropzonee: FunctionComponent<{ setFile: Dispatch<any> }> = ({ setFile }) =
   const [responseText, setResponseText] = useState<string | null>(null);
 
   const onDrop = useCallback(async (acceptedFiles: any) => {
-    console.log('in dropzone', acceptedFiles);
+    // console.log('in dropzone', acceptedFiles);
 
     
     
@@ -63,13 +63,13 @@ const Dropzonee: FunctionComponent<{ setFile: Dispatch<any> }> = ({ setFile }) =
       <div
         id="dropzone"
         {...getRootProps()}
-        className={`w-[70%] h-[100px] border-4 transition glasmorphism border-dashed flex justify-center items-center ${isDragReject ? "border-green-500" : "border-red-500"}`}
+        className={` w-[90%] md:w-[70%] h-[100px] border-4 transition glasmorphism border-dashed flex justify-center items-center ${isDragReject ? "border-green-500" : "border-red-500"}`}
       >
         <div className="flex flex-col justify-center items-center">
           {isDragReject ? (
             <p className="text-[1.2em] font-[600]">Only JPG and PNG files allowed.</p>
           ) : (
-           <div className="flex gap-3"> <p className="text-[1.2em] font-[600] text-white">Drag and drop to upload </p>
+           <div className="flex gap-3"> <p className="text-[1em] md:text-[1.6em] font-[600] text-white">Drag and drop to upload </p>
            <Image width={30} src={spheron} alt="logo"></Image> </div>
           )}
         </div>

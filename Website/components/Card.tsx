@@ -20,7 +20,7 @@ const Card = (props:any) => {
   }
   return (
     <>
-      <div className="border-2 border-white mt-[90px]  w-[350px] h-[350px] rounded-full flex items-center justify-center shadow image-animation  ">
+      <div className="border-2 border-white mt-[90px] w-[100px] h-[100px]   md:w-[350px] md:h-[350px] rounded-full flex items-center justify-center shadow image-animation  ">
         <Image width={900} src={image} alt="pikachu" className="p-2 " />
       </div>
       <Button text={text} onClick ={handleClick}/>

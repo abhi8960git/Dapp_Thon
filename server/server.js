@@ -167,6 +167,7 @@ app.post('/upload/json', (req, res) => {
       image,
       name,
       description,
+      
     };
 
     // Define the path to the local JSON file where you want to store the data

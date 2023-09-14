@@ -25,6 +25,7 @@ export default function Home() {
         await window.ethereum.request({ method: "eth_requestAccounts" });
         const web3 = new Web3(window.ethereum);
         const accounts = await web3.eth.getAccounts();
+        console.log("these are accounts",accounts);
         setAccount(accounts);
       }
 
@@ -96,7 +97,7 @@ export default function Home() {
       });
 
       if (response.status === 200) {
-        console.log(response.data);
+        console.log(response);
         setNfts(response.data.nfts);
       } else {
         // Handle the error case here
@@ -114,10 +115,10 @@ export default function Home() {
 
   return (
     <div
-      className={`flex flex-col justify-center items-center gap-10`}
+      className={`flex flex-col justify-center items-center gap-10 mb-4`}
     >
-      <div className="glassmorphism  p-3 flex items-center justify-between w-[80%] px-10  mt-10 ">
-        <p className="font text-white text-4xl text-yellow-300">PokeVerse</p>
+      <div className="glassmorphism  p-3 flex items-center justify-between w-[95%] md:w-[80%] px-3 md:px-10  mt-10 ">
+        <p className="font text-white text-2xl  md:text-4xl text-yellow-300 ">PokeVerse</p>
         <button className="button" onClick={connectWallet}>
         {
           isWalletConnected() ?  <p>{trimAndEllipsis(account[0])}</p> : "Connect Wallet"
@@ -125,9 +126,9 @@ export default function Home() {
         </button>
       </div>
 
-      <div className={`flex flex-col lg:flex-row items-center justify-evenly lg:gap-[138px] gap-[30px]`}>
-        <div className={` ${account.length > 0 && nfts == null ? '': 'blur-[2px] pointer-events-none'} mt-[-36px] w-[150%]   lg:w-[500px] h-[700px] glassmorphism border-2 border-red-500 p-6 relative flex flex-col place-items-center before:absolute before:h-[300px] before:w-[700px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]`}>
-          <p className="font text-xl tracking-[7px] text-white mt-3 mb-0">
+      <div className={`flex flex-col lg:flex-row items-center justify-evenly  lg:gap-[138px] gap-[50px]`}>
+        <div className={` ${account.length > 0 && nfts == null ? '': 'blur-[2px] pointer-events-none'} mt-[-36px] sm:w-[85%]   md:w-[150%]   lg:w-[500px] h-[400px] md:h-[700px] glassmorphism border-2 border-red-500 p-6 relative flex flex-col place-items-center before:absolute before:h-[300px] before:w-[700px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]`}>
+          <p className="font text-sm md:text-xl tracking-[7px] text-white mt-3 mb-0">
             Customize NFT with AR{" "}
           </p>
           
@@ -135,8 +136,8 @@ export default function Home() {
           <Card text={"Enter in AR"} image={pokemon} />
         </div>
 
-        <div className={` ${account.length > 0 && nfts != null ? '': 'blur-[2px] pointer-events-none'} mb-9 w-[150%] lg:w-[900px] h-[700px]   glassmorphism border-2 border-red-500 p-7  relative flex flex-col place-items-center before:absolute before:h-[300px] before:w-[700px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]`}>
-          <p className="font text-xl tracking-[7px] text-white mt-3 mb-0">
+        <div className={` ${account.length > 0 && nfts != null ? '': 'blur-[2px] pointer-events-none'} mt-[-36px] sm:w-[85%]   md:w-[150%]   lg:w-[500px] h-[400px] md:h-[700px] glassmorphism border-2 border-red-500 p-6 relative flex flex-col place-items-center before:absolute before:h-[300px] before:w-[700px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]`}>
+          <p className="font text-sm md:text-xl tracking-[7px] text-white  ">
             Enter in Pokemon Game{" "}
           </p>
           <Card text={"Enter in Game"} image={dragon} />
