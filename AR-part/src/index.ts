@@ -61,7 +61,7 @@ const scene = new THREE.Scene();
 
 // Create a Zappar camera that we'll use instead of a ThreeJS camera
 const camera = new ZapparThree.Camera();
-const controls = new OrbitControls(camera, renderer.domElement);
+
 // In order to use camera and motion data, we need to ask the users for permission
 // The Zappar library comes with some UI to help with that, so let's use it
 ZapparThree.permissionRequestUI().then((granted) => {
@@ -93,10 +93,6 @@ const gltfLoader = new GLTFLoader(manager);
 
 let mixer: THREE.AnimationMixer;
 let modelReady = false;
-const animationActions: THREE.AnimationAction[] = [];
-let activeAction: THREE.AnimationAction;
-let lastAction: THREE.AnimationAction;
-const fbxLoader: FBXLoader = new FBXLoader();
 
 //------------------MODEL LOADING STARTED---------------------
 // loading models
@@ -153,7 +149,7 @@ gltfLoader.load(
     gltf.scene.position.x = 2;
     const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 
-    mixer = new THREE.AnimationMixer(gltf);
+    mixer = new THREE.AnimationMixer(gltf.scene);
 
     // Now the model has been loaded, we can add it to our instant_tracker_group
 
@@ -165,6 +161,7 @@ gltfLoader.load(
       const ulElem = animationsPanel.appendChild(ul);
 
       gltf.animations.forEach((a: THREE.AnimationClip, i) => {
+        console.log(a, "animation_here");
         const li = document.createElement("UL") as HTMLLIElement;
         const liElem = ulElem.appendChild(li);
 
@@ -207,10 +204,6 @@ gltfLoader.load(
     }
 
     instantTrackerGroup.add(gltf.scene);
-    const bbox = new THREE.Box3().setFromObject(gltf.scene);
-    controls.target.x = (bbox.min.x + bbox.max.x) / 2;
-    controls.target.y = (bbox.min.y + bbox.max.y) / 2;
-    controls.target.z = (bbox.min.z + bbox.max.z) / 2;
 
     modelReady = true;
   },
@@ -258,15 +251,15 @@ instantTrackerGroup.add(grid);
 
 //highlight square
 
-const hightSquare = new THREE.Mesh(
-  new THREE.PlaneGeometry(1, 1),
-  new THREE.MeshBasicMaterial({ side: THREE.DoubleSide })
-);
+// const hightSquare = new THREE.Mesh(
+//   new THREE.PlaneGeometry(1, 1),
+//   new THREE.MeshBasicMaterial({ side: THREE.DoubleSide })
+// );
 
-hightSquare.rotateX(-Math.PI / 2);
-hightSquare.position.set(0.5, 0, 0.5);
+// hightSquare.rotateX(-Math.PI / 2);
+// hightSquare.position.set(0.5, 0, 0.5);
 
-instantTrackerGroup.add(hightSquare);
+// instantTrackerGroup.add(hightSquare);
 
 // adding image dynamically
 buttonOne.addEventListener("click", async () => {
@@ -419,7 +412,6 @@ placeButton.addEventListener("click", () => {
 console.log(instantTrackerGroup);
 
 const clock = new THREE.Clock();
-let delta = 0;
 
 const stats = new Stats();
 document.body.appendChild(stats.dom);
@@ -433,18 +425,17 @@ function render(): void {
   }
 
   // The Zappar camera must have updateFrame called every frame
-  if (modelReady) mixer.update(clock.getDelta());
+
   camera.updateFrame(renderer);
   stats.update();
   // Draw the ThreeJS scene in the usual way, but using the Zappar camera
   renderer.render(scene, camera);
   // controls.update(0.01);
-  delta = clock.getDelta();
 
   // camera.position.y += 1;
   // console.log(camera.position);
   // Call render() again next frame
-
+  if (modelReady) mixer.update(clock.getDelta());
   requestAnimationFrame(render);
 }
 
