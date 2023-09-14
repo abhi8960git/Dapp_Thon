@@ -9,6 +9,7 @@ import * as ZapparThree from "@zappar/zappar-threejs";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import Stats from "three/examples/jsm/libs/stats.module";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GUI } from "dat.gui";
 
 let isPokeballRotating = false;
@@ -60,7 +61,7 @@ const scene = new THREE.Scene();
 
 // Create a Zappar camera that we'll use instead of a ThreeJS camera
 const camera = new ZapparThree.Camera();
-
+const controls = new OrbitControls(camera, renderer.domElement);
 // In order to use camera and motion data, we need to ask the users for permission
 // The Zappar library comes with some UI to help with that, so let's use it
 ZapparThree.permissionRequestUI().then((granted) => {
@@ -151,38 +152,67 @@ gltfLoader.load(
     gltf.scene.position.z = -4;
     gltf.scene.position.x = 2;
     const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    gltf.scene.traverse(function (node) {
-      if (node.isMesh) {
-        // node.material = material;
-        console.log(node);
-      }
-    });
+
     mixer = new THREE.AnimationMixer(gltf);
 
     // Now the model has been loaded, we can add it to our instant_tracker_group
-    instantTrackerGroup.add(gltf.scene);
 
-    fbxLoader.load(
-      fbxModel,
-      (object) => {
-        console.log("loaded goofyrunning");
-        (object as THREE.Object3D).animations[0].tracks.shift(); //delete the specific track that moves the object forward while running
-        //console.dir((object as THREE.Object3D).animations[0])
-        const animationAction = mixer.clipAction(
-          (object as THREE.Object3D).animations[0]
-        );
-        animationActions.push(animationAction);
-        animationsFolder.add(animations, "Thrill");
+    if (gltf.animations.length > 0) {
+      const animationsPanel = document.getElementById(
+        "animationsPanel"
+      ) as HTMLDivElement;
+      const ul = document.createElement("UL") as HTMLUListElement;
+      const ulElem = animationsPanel.appendChild(ul);
 
-        modelReady = true;
-      },
-      (xhr) => {
-        console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-      },
-      (error) => {
-        console.log(error);
+      gltf.animations.forEach((a: THREE.AnimationClip, i) => {
+        const li = document.createElement("UL") as HTMLLIElement;
+        const liElem = ulElem.appendChild(li);
+
+        const checkBox = document.createElement("INPUT") as HTMLInputElement;
+        checkBox.id = "checkbox_" + i;
+        checkBox.type = "checkbox";
+        checkBox.addEventListener("change", (e: Event) => {
+          if ((e.target as HTMLInputElement).checked) {
+            mixer.clipAction((gltf as any).animations[i]).play();
+          } else {
+            mixer.clipAction((gltf as any).animations[i]).stop();
+          }
+        });
+        liElem.appendChild(checkBox);
+
+        const label = document.createElement("LABEL") as HTMLLabelElement;
+        label.htmlFor = "checkbox_" + i;
+        label.innerHTML = a.name;
+        liElem.appendChild(label);
+      });
+
+      if (gltf.animations.length > 1) {
+        const btnPlayAll = document.getElementById(
+          "btnPlayAll"
+        ) as HTMLButtonElement;
+        btnPlayAll.addEventListener("click", (e: Event) => {
+          mixer.stopAllAction();
+          gltf.animations.forEach((a: THREE.AnimationClip) => {
+            mixer.clipAction(a).play();
+          });
+        });
+
+        btnPlayAll.style.display = "block";
       }
-    );
+    } else {
+      const animationsPanel = document.getElementById(
+        "animationsPanel"
+      ) as HTMLDivElement;
+      animationsPanel.innerHTML = "No animations found in model";
+    }
+
+    instantTrackerGroup.add(gltf.scene);
+    const bbox = new THREE.Box3().setFromObject(gltf.scene);
+    controls.target.x = (bbox.min.x + bbox.max.x) / 2;
+    controls.target.y = (bbox.min.y + bbox.max.y) / 2;
+    controls.target.z = (bbox.min.z + bbox.max.z) / 2;
+
+    modelReady = true;
   },
   (xhr) => {
     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
@@ -305,39 +335,6 @@ function onClick(event: MouseEvent) {
 }
 
 // console.log(sceneMeshes);
-
-// Add event listeners to the buttons for interaction
-forwardButton.addEventListener("click", () => {
-  // Trigger the "Walking" animation
-  playAnimation("Walking");
-});
-
-jumpButton.addEventListener("click", () => {
-  // Trigger the "Jump" animation
-  playAnimation("Jump");
-});
-
-function playAnimation(animationName) {
-  // Find the animation action by name
-  const action = animationActions.find(
-    (action) => action._clip.name === animationName
-  );
-
-  if (action) {
-    // Check if the action is not already playing to prevent interruptions
-    if (action !== activeAction) {
-      // Fade out the currently active action and fade in the new action
-      if (activeAction) {
-        activeAction.fadeOut(0.2); // Adjust the fade duration as needed
-      }
-      action.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(0.2); // Adjust the fade duration as needed
-      action.play();
-
-      // Set the new action as the active action
-      activeAction = action;
-    }
-  }
-}
 
 // creating nft
 
