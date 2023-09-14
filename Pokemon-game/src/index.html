@@ -52,6 +52,24 @@
       .control-button:hover {
         background-color: rgba(255, 255, 255, 0.5);
       }
+
+      /* Define a CSS class for the blinking animation */
+      .blink {
+        animation: blink-animation 0.3s steps(2, start) infinite;
+        -webkit-animation: blink-animation 0.3s steps(2, start) infinite;
+      }
+
+      @keyframes blink-animation {
+        to {
+          visibility: hidden;
+        }
+      }
+
+      @-webkit-keyframes blink-animation {
+        to {
+          visibility: hidden;
+        }
+      }
     </style>
   </head>
 
@@ -61,10 +79,29 @@
     <div id="tap-to-place">Tap to Place</div>
 
     <div id="game-controls">
-      <div class="control-button" id="moveForward">↑</div>
-      <div class="control-button" id="moveLeft">←</div>
-      <div class="control-button" id="moveRight">→</div>
-      <div class="control-button" id="moveBackward">↓</div>
+      <div class="control-button1" id="moveForward">↑</div>
+      <div class="control-button2" id="moveLeft">←</div>
+      <div class="control-button3" id="moveRight">→</div>
+      <div class="control-button4" id="moveBackward">↓</div>
     </div>
+    <script>
+      // Function to add the "blink" class to the body
+      function startBlinking() {
+        document.body.classList.add("blink");
+      }
+
+      // Function to remove the "blink" class from the body
+      function stopBlinking() {
+        document.body.classList.remove("blink");
+      }
+
+      // Start blinking after a certain time (e.g., 5 seconds)
+      setTimeout(startBlinking, 30000);
+
+      // Redirect to another URL after a delay (e.g., 10 seconds)
+      setTimeout(function () {
+        window.location.href = "https://example.com"; // Replace with your desired URL
+      }, 31500);
+    </script>
   </body>
 </html>

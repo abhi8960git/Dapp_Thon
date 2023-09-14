@@ -13,6 +13,7 @@ import * as TWEEN from "tween.js";
 
 const pokeLand = new URL("../assets/poke.glb", import.meta.url).href;
 const player = new URL("../assets/walk animation.glb", import.meta.url).href;
+const grass = new URL("../assets/grses.png", import.meta.url).href;
 
 import "./index.css";
 
@@ -222,7 +223,7 @@ function moveForward() {
 
     // Create a new tween for smooth movement
     new TWEEN.Tween(playerModel.position)
-      .to(targetPosition, 400) // Adjust duration as needed
+      .to(targetPosition, 300) // Adjust duration as needed
       .onUpdate(() => {
         // This function will be called during the animation
         setAction(animationActions[0]);
@@ -249,7 +250,7 @@ function moveBackward() {
           .add(forwardDirection.multiplyScalar(movementStep));
 
         new TWEEN.Tween(playerModel.position)
-          .to(targetPosition, 400) // Adjust duration as needed
+          .to(targetPosition, 300) // Adjust duration as needed
           .onUpdate(() => {
             setAction(animationActions[0]);
           })
@@ -277,7 +278,7 @@ function moveLeft() {
           .add(forwardDirection.multiplyScalar(movementStep));
 
         new TWEEN.Tween(playerModel.position)
-          .to(targetPosition, 400) // Adjust duration as needed
+          .to(targetPosition, 300) // Adjust duration as needed
           .onUpdate(() => {
             setAction(animationActions[0]);
           })
@@ -305,7 +306,7 @@ function moveRight() {
           .add(forwardDirection.multiplyScalar(movementStep));
 
         new TWEEN.Tween(playerModel.position)
-          .to(targetPosition, 400) // Adjust duration as needed
+          .to(targetPosition, 300) // Adjust duration as needed
           .onUpdate(() => {
             setAction(animationActions[0]);
           })
@@ -325,6 +326,50 @@ const setAction = (toAction: THREE.AnimationAction) => {
   activeAction.play();
   activeAction.fadeOut(1);
 };
+
+//================ADDING GRASS LOGIC ==================
+
+// Define the dimensions of the plane
+const planeWidth = 5.5; // Adjust the width as needed
+const planeHeight = 5.5; // Adjust the height as needed
+
+// Create the plane geometry
+const planeGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight, 10, 10);
+
+// Define the displacement map (you can create or load a displacement map texture)
+const displacementMap = new THREE.TextureLoader().load(grass);
+displacementMap.wrapS = THREE.RepeatWrapping;
+displacementMap.wrapT = THREE.RepeatWrapping;
+
+// Set the displacement map for the plane
+planeGeometry.setAttribute(
+  "displacement",
+  new THREE.BufferAttribute(
+    new Float32Array(planeGeometry.attributes.position.count),
+    1
+  )
+);
+planeGeometry.setAttribute("uv2", planeGeometry.attributes.uv); // Make sure the UVs are set for displacement mapping
+
+// Create the plane material with displacement
+const planeMaterial = new THREE.MeshPhongMaterial({
+  color: 0x00ff00, // Grass color
+  displacementMap: displacementMap,
+  displacementScale: 0.2, // Adjust the scale as needed to control the height of the grass
+  side: THREE.DoubleSide, // Show the backside of the plane as well
+});
+
+// Create the plane mesh
+const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+
+// Rotate the plane to be horizontal
+plane.rotation.x = -Math.PI / 2;
+plane.position.x = -4;
+plane.position.z = -4;
+// Add the plane to the scene
+instantTrackerGroup.add(plane);
+
+//===============creating collison logic ===============
 
 //----------LIGHTING-----------
 
