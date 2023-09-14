@@ -6,15 +6,51 @@
       name="viewport"
       content="width=device-width,user-scalable=no,minimal-ui"
     />
-    <title>Pokemon NFT</title>
+    <title>Pokemon Game</title>
     <script type="module" src="index.ts"></script>
     <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-end;
+        height: 100vh;
+      }
+
       .webgl {
         position: relative;
-        margin: 0;
         width: 100%;
         height: 100%;
-        overflow: hidden;
+      }
+
+      #game-controls {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .control-button {
+        width: 50px;
+        height: 50px;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        margin: 10px 0;
+        cursor: pointer;
+        background-color: rgba(255, 255, 255, 0.3);
+        color: #fff;
+        font-size: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.3s;
+      }
+
+      .control-button:hover {
+        background-color: rgba(255, 255, 255, 0.5);
       }
     </style>
   </head>
@@ -23,5 +59,12 @@
     <canvas class="webgl"></canvas>
 
     <div id="tap-to-place">Tap to Place</div>
+
+    <div id="game-controls">
+      <div class="control-button" id="moveForward">↑</div>
+      <div class="control-button" id="moveLeft">←</div>
+      <div class="control-button" id="moveRight">→</div>
+      <div class="control-button" id="moveBackward">↓</div>
+    </div>
   </body>
 </html>
