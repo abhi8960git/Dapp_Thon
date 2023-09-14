@@ -6,15 +6,199 @@
       name="viewport"
       content="width=device-width,user-scalable=no,minimal-ui"
     />
-    <title>Pokemon NFT</title>
+    <title>Pokemon Game</title>
     <script type="module" src="index.ts"></script>
     <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-end;
+        height: 100vh;
+      }
+
       .webgl {
         position: relative;
-        margin: 0;
         width: 100%;
         height: 100%;
-        overflow: hidden;
+      }
+
+      #game-controls {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .container {
+        width: 100%;
+        padding: 10%;
+        box-sizing: border-box;
+      }
+
+      .container .inner {
+        width: 100%;
+        position: relative;
+        min-height: 150px;
+        display: inline-block;
+      }
+
+      .content {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto 50px auto;
+      }
+
+      .content .inner {
+        padding: 20px;
+        background-color: white;
+        color: #555;
+      }
+
+      .content .inner h1 {
+        font-weight: normal;
+      }
+
+      .content .inner p.code {
+        color: #999;
+      }
+
+      .btn {
+        font-family: "Indie Flower", cursive;
+        font-weight: bold;
+      }
+
+      .control-button1 {
+        left: calc(50% - 27px);
+        border: none;
+        text-decoration: none;
+        padding: 15px 25px;
+        color: #fff;
+        border-radius: 50px;
+        background-color: #e67e22;
+        display: inline-block;
+        position: relative;
+        box-shadow: 0 8px #bf6516;
+      }
+
+      .control-button1:hover {
+        color: #fff;
+        box-shadow: 0 6px #bf6516;
+        top: 2px;
+      }
+
+      .control-button1:active {
+        box-shadow: 0 0px #bf6516;
+        top: 8px;
+      }
+
+      .control-button1:focus {
+        outline: 0;
+      }
+
+      .control-button2 {
+        left: calc(50% - 81px);
+        border: none;
+        text-decoration: none;
+        padding: 15px 25px;
+        color: #fff;
+        border-radius: 50px;
+        background-color: #3498db;
+        display: inline-block;
+        position: relative;
+        box-shadow: 0 8px #217dbb;
+      }
+
+      .control-button2:hover {
+        color: #fff;
+        box-shadow: 0 6px #217dbb;
+        top: 2px;
+      }
+
+      .control-button2:active {
+        box-shadow: 0 0px #217dbb;
+        top: 8px;
+      }
+
+      .control-button2:focus {
+        outline: 0;
+      }
+
+      .control-button3 {
+        left: calc(110% - 3px);
+        border: none;
+        text-decoration: none;
+        padding: 15px 25px;
+        color: #fff;
+        border-radius: 50px;
+        background-color: #3498db;
+        display: inline-block;
+        position: relative;
+        box-shadow: 0 8px #217dbb;
+      }
+
+      .control-button3:hover {
+        color: #fff;
+        box-shadow: 0 6px #217dbb;
+        top: 2px;
+      }
+
+      .control-button3:active {
+        box-shadow: 0 0px #217dbb;
+        top: 8px;
+      }
+
+      .control-button3:focus {
+        outline: 0;
+      }
+
+      .control-button4 {
+        left: calc(50% - 27px);
+        border: none;
+        text-decoration: none;
+        padding: 15px 25px;
+        color: #fff;
+        border-radius: 50px;
+        background-color: #e67e22;
+        display: inline-block;
+        position: relative;
+        box-shadow: 0 8px #bf6516;
+      }
+
+      .control-button4:hover {
+        color: #fff;
+        box-shadow: 0 6px #bf6516;
+        top: 2px;
+      }
+
+      .control-button4:active {
+        box-shadow: 0 0px #bf6516;
+        top: 8px;
+      }
+
+      .control-button4:focus {
+        outline: 0;
+      }
+
+      /* Define a CSS class for the blinking animation */
+      .blink {
+        animation: blink-animation 0.3s steps(2, start) infinite;
+        -webkit-animation: blink-animation 0.3s steps(2, start) infinite;
+      }
+
+      @keyframes blink-animation {
+        to {
+          visibility: hidden;
+        }
+      }
+
+      @-webkit-keyframes blink-animation {
+        to {
+          visibility: hidden;
+        }
       }
     </style>
   </head>
@@ -23,5 +207,31 @@
     <canvas class="webgl"></canvas>
 
     <div id="tap-to-place">Tap to Place</div>
+
+    <div id="game-controls">
+      <div class="control-button1" id="moveForward">↑</div>
+      <div class="control-button2" id="moveLeft">←</div>
+      <div class="control-button3" id="moveRight">→</div>
+      <div class="control-button4" id="moveBackward">↓</div>
+    </div>
+    <script>
+      // Function to add the "blink" class to the body
+      function startBlinking() {
+        document.body.classList.add("blink");
+      }
+
+      // Function to remove the "blink" class from the body
+      function stopBlinking() {
+        document.body.classList.remove("blink");
+      }
+
+      // Start blinking after a certain time (e.g., 5 seconds)
+      setTimeout(startBlinking, 30000);
+
+      // Redirect to another URL after a delay (e.g., 10 seconds)
+      setTimeout(function () {
+        window.location.href = "https://example.com"; // Replace with your desired URL
+      }, 31500);
+    </script>
   </body>
 </html>

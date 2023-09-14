@@ -9,8 +9,11 @@ import * as ZapparThree from "@zappar/zappar-threejs";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import Stats from "three/examples/jsm/libs/stats.module";
+import * as TWEEN from "tween.js";
 
 const pokeLand = new URL("../assets/poke.glb", import.meta.url).href;
+const player = new URL("../assets/walk animation.glb", import.meta.url).href;
+const grass = new URL("../assets/grses.png", import.meta.url).href;
 
 import "./index.css";
 
@@ -29,6 +32,11 @@ const manager = new ZapparThree.LoadingManager();
 
 // ==================== Selectings dom elemets ====================
 const canvas = document.querySelector("canvas.webgl");
+// Reference individual buttons
+const moveForwardButton = document.getElementById("moveForward");
+const moveLeftButton = document.getElementById("moveLeft");
+const moveRightButton = document.getElementById("moveRight");
+const moveBackwardButton = document.getElementById("moveBackward");
 
 // Construct our ThreeJS renderer and scene as usual
 const renderer = new THREE.WebGLRenderer({
@@ -70,17 +78,87 @@ scene.add(instantTrackerGroup);
 // ==================== Creating custom movement using rayCaster ====================
 
 const gltfLoader = new GLTFLoader(manager);
+let playerModel;
 //------------------MODEL LOADING STARTED---------------------
 // loading models
 
 gltfLoader.load(
   pokeLand,
   (gltf) => {
-    model1 = gltf.scene;
+    gltf.scene.traverse(function (child) {
+      if ((child as THREE.Mesh).isMesh) {
+        const m = child as THREE.Mesh;
+        m.receiveShadow = true;
+        m.castShadow = true;
+      }
+      if ((child as THREE.Light).isLight) {
+        const l = child as THREE.SpotLight;
+        l.castShadow = true;
+        l.shadow.bias = -0.003;
+        l.shadow.mapSize.width = 2048;
+        l.shadow.mapSize.height = 2048;
+      }
+    });
+
     console.log("tree", gltf);
     gltf.scene.scale.set(1, 1, 1);
 
     instantTrackerGroup.add(gltf.scene);
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  (err) => {
+    console.log("An error ocurred loading the GLTF model", err);
+  }
+);
+let mixer: THREE.AnimationMixer;
+let modelReady = false;
+const animationActions: THREE.AnimationAction[] = [];
+let activeAction: THREE.AnimationAction;
+let lastAction: THREE.AnimationAction;
+
+gltfLoader.load(
+  player,
+  (gltf) => {
+    playerModel = gltf.scene;
+    gltf.scene.traverse(function (child) {
+      if ((child as THREE.Mesh).isMesh) {
+        const m = child as THREE.Mesh;
+        m.receiveShadow = true;
+        m.castShadow = true;
+        m.visible = true;
+      }
+      if ((child as THREE.Light).isLight) {
+        const l = child as THREE.SpotLight;
+        l.castShadow = true;
+        l.shadow.bias = -0.003;
+        l.shadow.mapSize.width = 2048;
+        l.shadow.mapSize.height = 2048;
+      }
+    });
+    console.log(gltf, "pickachuu");
+    gltf.scene.scale.set(1, 1, 1);
+    gltf.scene.position.y = 0;
+
+    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+
+    mixer = new THREE.AnimationMixer(gltf.scene);
+
+    // Now the model has been loaded, we can add it to our instant_tracker_group
+
+    if (gltf.animations.length > 0) {
+      gltf.animations.forEach((a: THREE.AnimationClip, i) => {
+        console.log(a, "animation_here");
+
+        animationActions.push(mixer.clipAction((gltf as any).animations[i]));
+        (gltf as any).animations[i].tracks.shift(); //delete the specific track that moves the object forward while running
+      });
+    }
+
+    instantTrackerGroup.add(gltf.scene);
+
+    modelReady = true;
   },
   (xhr) => {
     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
@@ -119,6 +197,179 @@ gltfLoader.load(
 //     }
 //   });
 // }
+
+//===============ANIMATION LOGIC HERE ==================
+
+// Add event listeners to the buttons
+moveForwardButton.addEventListener("click", moveForward);
+moveLeftButton.addEventListener("click", moveLeft);
+moveRightButton.addEventListener("click", moveRight);
+moveBackwardButton.addEventListener("click", moveBackward);
+
+// Define movement step size
+const movementStep = 1; // You can adjust this value
+const rotationAngle = Math.PI / 4; // You can adjust this value
+
+// Function to move the model forward
+function moveForward() {
+  if (modelReady) {
+    const modelPosition = playerModel.position.clone();
+    const forwardDirection = new THREE.Vector3(0, 0, 1);
+    forwardDirection.applyQuaternion(playerModel.quaternion);
+
+    const targetPosition = modelPosition
+      .clone()
+      .add(forwardDirection.multiplyScalar(movementStep));
+
+    // Create a new tween for smooth movement
+    new TWEEN.Tween(playerModel.position)
+      .to(targetPosition, 300) // Adjust duration as needed
+      .onUpdate(() => {
+        // This function will be called during the animation
+        setAction(animationActions[0]);
+      })
+      .start();
+  }
+}
+
+// Function to move the model backward
+function moveBackward() {
+  if (modelReady) {
+    const currentRotation = playerModel.rotation.y;
+    const targetRotation = currentRotation + Math.PI; // Turn 180 degrees
+
+    new TWEEN.Tween(playerModel.rotation)
+      .to({ y: targetRotation }, 900) // Adjust duration as needed
+      .onComplete(() => {
+        const modelPosition = playerModel.position.clone();
+        const forwardDirection = new THREE.Vector3(0, 0, 1);
+        forwardDirection.applyQuaternion(playerModel.quaternion);
+
+        const targetPosition = modelPosition
+          .clone()
+          .add(forwardDirection.multiplyScalar(movementStep));
+
+        new TWEEN.Tween(playerModel.position)
+          .to(targetPosition, 300) // Adjust duration as needed
+          .onUpdate(() => {
+            setAction(animationActions[0]);
+          })
+          .start();
+      })
+      .start();
+  }
+}
+
+// Function to move the model left
+function moveLeft() {
+  if (modelReady) {
+    const currentRotation = playerModel.rotation.y;
+    const targetRotation = currentRotation + rotationAngle;
+
+    new TWEEN.Tween(playerModel.rotation)
+      .to({ y: targetRotation }, 500) // Adjust duration as needed
+      .onComplete(() => {
+        const modelPosition = playerModel.position.clone();
+        const forwardDirection = new THREE.Vector3(0, 0, 1);
+        forwardDirection.applyQuaternion(playerModel.quaternion);
+
+        const targetPosition = modelPosition
+          .clone()
+          .add(forwardDirection.multiplyScalar(movementStep));
+
+        new TWEEN.Tween(playerModel.position)
+          .to(targetPosition, 300) // Adjust duration as needed
+          .onUpdate(() => {
+            setAction(animationActions[0]);
+          })
+          .start();
+      })
+      .start();
+  }
+}
+
+// Function to move the model right
+function moveRight() {
+  if (modelReady) {
+    const currentRotation = playerModel.rotation.y;
+    const targetRotation = currentRotation - rotationAngle;
+
+    new TWEEN.Tween(playerModel.rotation)
+      .to({ y: targetRotation }, 500) // Adjust duration as needed
+      .onComplete(() => {
+        const modelPosition = playerModel.position.clone();
+        const forwardDirection = new THREE.Vector3(0, 0, 1);
+        forwardDirection.applyQuaternion(playerModel.quaternion);
+
+        const targetPosition = modelPosition
+          .clone()
+          .add(forwardDirection.multiplyScalar(movementStep));
+
+        new TWEEN.Tween(playerModel.position)
+          .to(targetPosition, 300) // Adjust duration as needed
+          .onUpdate(() => {
+            setAction(animationActions[0]);
+          })
+          .start();
+      })
+      .start();
+  }
+}
+
+const setAction = (toAction: THREE.AnimationAction) => {
+  lastAction = activeAction;
+  activeAction = toAction;
+
+  // lastAction.fadeOut(1);
+  activeAction.reset();
+  // activeAction.fadeIn(1);
+  activeAction.play();
+  activeAction.fadeOut(1);
+};
+
+//================ADDING GRASS LOGIC ==================
+
+// Define the dimensions of the plane
+const planeWidth = 5.5; // Adjust the width as needed
+const planeHeight = 5.5; // Adjust the height as needed
+
+// Create the plane geometry
+const planeGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight, 10, 10);
+
+// Define the displacement map (you can create or load a displacement map texture)
+const displacementMap = new THREE.TextureLoader().load(grass);
+displacementMap.wrapS = THREE.RepeatWrapping;
+displacementMap.wrapT = THREE.RepeatWrapping;
+
+// Set the displacement map for the plane
+planeGeometry.setAttribute(
+  "displacement",
+  new THREE.BufferAttribute(
+    new Float32Array(planeGeometry.attributes.position.count),
+    1
+  )
+);
+planeGeometry.setAttribute("uv2", planeGeometry.attributes.uv); // Make sure the UVs are set for displacement mapping
+
+// Create the plane material with displacement
+const planeMaterial = new THREE.MeshPhongMaterial({
+  color: 0x00ff00, // Grass color
+  displacementMap: displacementMap,
+  displacementScale: 0.2, // Adjust the scale as needed to control the height of the grass
+  side: THREE.DoubleSide, // Show the backside of the plane as well
+});
+
+// Create the plane mesh
+const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+
+// Rotate the plane to be horizontal
+plane.rotation.x = -Math.PI / 2;
+plane.position.x = -4;
+plane.position.z = -4;
+// Add the plane to the scene
+instantTrackerGroup.add(plane);
+
+//===============creating collison logic ===============
 
 //----------LIGHTING-----------
 
@@ -209,7 +460,8 @@ function render(): void {
   // Draw the ThreeJS scene in the usual way, but using the Zappar camera
   renderer.render(scene, camera);
   // controls.update(0.01);
-  delta = clock.getDelta();
+  if (modelReady) mixer.update(clock.getDelta());
+  TWEEN.update();
 
   // camera.position.y += 1;
   // console.log(camera.position);

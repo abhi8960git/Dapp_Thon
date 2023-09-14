@@ -63,20 +63,7 @@ button {
   transform: translateY(-0.2em);
   transition: transform 0.1s ease;
 }
-.button_four {
-  position: fixed;
-  top: 100px;
-  left: 0px;
-  display: block;
-  box-sizing: border-box;
-  border: 2px solid var(--button_outline_color);
-  border-radius: var(--button_radius);
-  padding: 0.75em 1.5em;
-  background: var(--button_color);
-  color: var(--button_outline_color);
-  transform: translateY(-0.2em);
-  transition: transform 0.1s ease;
-}
+
 .button-container {
   position: absolute;
   top: 50%;
@@ -114,6 +101,58 @@ button {
 .button:hover {
   transform: scale(1.1);
   box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Styles for game controller-style buttons */
+.controller-buttons {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 999;
+}
+
+.controller-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #007bff;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: white;
+  font-size: 20px;
+}
+
+.controller-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Keyframe animations */
+@keyframes buttonClick {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.controller-button:hover {
+  animation: buttonClick 0.5s ease;
+}
+
+.controller-button:active {
+  transform: translateY(2px);
 }
 
 @keyframes buttonClick {
