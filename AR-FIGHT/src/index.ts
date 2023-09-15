@@ -15,15 +15,9 @@ import { GUI } from "dat.gui";
 let isPokeballRotating = false;
 
 // const model = new URL("../assets/pikachu2.glb", import.meta.url).href;
-// const pokemon1 = new URL("../assets/peakpx-2.jpg", import.meta.url).href;
-// const pokemon2 = new URL("../assets/chari.png", import.meta.url).href;
-
-// const pokeball = new URL(
-//   "../assets/pokemon_basic_pokeball.glb",
-//   import.meta.url
-// ).href;
-
-// const frame = new URL("../assets/picture_frame.glb", import.meta.url).href;
+const pokemon2 = new URL("../assets/fly1.glb", import.meta.url).href;
+const pokemon1 = new URL("../assets/FLY ACTTACK.fbx", import.meta.url).href;
+const luxury1 = new URL("../assets/LUXARY.glb", import.meta.url).href;
 
 import "./index.css";
 import { formToJSON } from "axios";
@@ -115,163 +109,156 @@ scene.add(instantTrackerGroup);
 
 const gltfLoader = new GLTFLoader(manager);
 
-let mixer: THREE.AnimationMixer;
+let mixers: THREE.AnimationMixer[] = [];
+
 let modelReady = false;
+let modelReady2 = false;
+let pokemon1AttackAnimations: THREE.AnimationClip[] = []; // Array for Pokémon 1 attack animations
+let pokemon2AttackAnimations: THREE.AnimationClip[] = []; // Array for Pokémon 2 attack animations
 
 //------------------MODEL LOADING STARTED---------------------
-// loading models
-// gltfLoader.load(
-//   frame,
-//   (gltf) => {
-//     console.log(gltf, "frame");
-//     gltf.scene.scale.set(0.02, 0.02, 0.02);
-//     // gltf.scene.position.y = 2;
-//     gltf.scene.position.z = -9;
-//     gltf.scene.position.x = 2;
-//     gltf.scene.rotation.y -= Math.PI / 2;
 
-//     // Now the model has been loaded, we can add it to our instant_tracker_group
-//     instantTrackerGroup.add(gltf.scene);
-//   },
-//   (xhr) => {
-//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-//   },
-//   (err) => {
-//     console.log("An error ocurred loading the GLTF model", err);
-//   }
-// );
+gltfLoader.load(
+  pokemon2,
+  (gltf) => {
+    //gltf.scene.scale.set(0.5, 0.5, 0.5);
+    gltf.scene.position.set(-3, 0, -7);
+    mixer = new THREE.AnimationMixer(gltf.scene);
 
-// gltfLoader.load(
-//   pokeball,
-//   (gltf) => {
-//     console.log(gltf, "pokeball");
-//     gltf.scene.scale.set(0.2, 0.2, 0.2);
-//     gltf.scene.position.y = 1.5;
-//     gltf.scene.position.z = -5;
-//     gltf.scene.position.x = -2;
-//     //gltf.scene.rotation.y -= Math.PI / 2;
-//     gltf.scene.name = "Pokeball";
+    const angleInRadians = THREE.MathUtils.degToRad(60);
 
-//     // Now the model has been loaded, we can add it to our instant_tracker_group
-//     instantTrackerGroup.add(gltf.scene);
-//   },
-//   (xhr) => {
-//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-//   },
-//   (err) => {
-//     console.log("An error ocurred loading the GLTF model", err);
-//   }
-// );
+    // Rotate the model to the right by 45 degrees
+    gltf.scene.rotation.y = angleInRadians;
 
-// gltfLoader.load(
-//   model,
-//   (gltf) => {
-//     console.log(gltf, "pickachuu");
-//     gltf.scene.scale.set(3, 3, 3);
-//     gltf.scene.position.y = 0;
-//     gltf.scene.position.z = -4;
-//     gltf.scene.position.x = 2;
-//     const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const animationAction = mixer.clipAction((gltf as any).animations[0]);
+    pokemon1AttackAnimations.push(animationAction);
 
-//     mixer = new THREE.AnimationMixer(gltf.scene);
+    mixers.push(mixer);
 
-//     // Now the model has been loaded, we can add it to our instant_tracker_group
+    console.log("charizard", gltf);
 
-//     if (gltf.animations.length > 0) {
-//       const animationsPanel = document.getElementById(
-//         "animationsPanel"
-//       ) as HTMLDivElement;
-//       const ul = document.createElement("UL") as HTMLUListElement;
-//       const ulElem = animationsPanel.appendChild(ul);
+    gltf.scene.traverse(function (object) {
+      object.frustumCulled = false;
+    });
 
-//       gltf.animations.forEach((a: THREE.AnimationClip, i) => {
-//         console.log(a, "animation_here");
-//         const li = document.createElement("UL") as HTMLLIElement;
-//         const liElem = ulElem.appendChild(li);
+    // // Create a directional light
+    // const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    // directionalLight.position.set(1, 1, 1); // Set the light's position
 
-//         const checkBox = document.createElement("INPUT") as HTMLInputElement;
-//         checkBox.id = "checkbox_" + i;
-//         checkBox.type = "checkbox";
-//         checkBox.addEventListener("change", (e: Event) => {
-//           if ((e.target as HTMLInputElement).checked) {
-//             mixer.clipAction((gltf as any).animations[i]).play();
-//           } else {
-//             mixer.clipAction((gltf as any).animations[i]).stop();
-//           }
-//         });
-//         liElem.appendChild(checkBox);
+    // // Add the light to the scene
+    // gltf.scene.add(directionalLight);
 
-//         const label = document.createElement("LABEL") as HTMLLabelElement;
-//         label.htmlFor = "checkbox_" + i;
-//         label.innerHTML = a.name;
-//         liElem.appendChild(label);
-//       });
+    // // You can also add an ambient light for overall illumination
+    // const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Color, Intensity
+    // gltf.scene.add(ambientLight);
 
-//       if (gltf.animations.length > 1) {
-//         const btnPlayAll = document.getElementById(
-//           "btnPlayAll"
-//         ) as HTMLButtonElement;
-//         btnPlayAll.addEventListener("click", (e: Event) => {
-//           mixer.stopAllAction();
-//           gltf.animations.forEach((a: THREE.AnimationClip) => {
-//             mixer.clipAction(a).play();
-//           });
-//         });
+    instantTrackerGroup.add(gltf.scene);
 
-//         btnPlayAll.style.display = "block";
-//       }
-//     } else {
-//       const animationsPanel = document.getElementById(
-//         "animationsPanel"
-//       ) as HTMLDivElement;
-//       animationsPanel.innerHTML = "No animations found in model";
-//     }
-
-//     instantTrackerGroup.add(gltf.scene);
-
-//     modelReady = true;
-//   },
-//   (xhr) => {
-//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-//   },
-//   (err) => {
-//     console.log("An error ocurred loading the GLTF model", err);
-//   }
-// );
-//------------------MODEL LOADING FINISHED---------------------
-
-// const planeWidth = 1.5; // The width of the plane in your scene
-// const planeHeight = (2560 / 1920) * planeWidth; // Calculate the height to maintain the image aspect ratio
-
-// const planeGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight, 1, 1);
-// // Load the pre-saved image texture
-// const textureLoader = new THREE.TextureLoader();
-// let newTexture = textureLoader.load(pokemon1);
-// console.log(newTexture);
-// const planeMaterial = new THREE.MeshBasicMaterial({ map: newTexture });
-// const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-// planeMaterial.visible = false;
-// planeMesh.receiveShadow = true;
-// planeMesh.position.set(0, 2, -5);
-// // Add the plane to the scene
-// instantTrackerGroup.add(planeMesh);
-
-//creating grid
-
-const planeMesh2 = new THREE.Mesh(
-  new THREE.PlaneGeometry(20, 20),
-  new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, visible: false })
+    modelReady = true;
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  (error) => {
+    console.log(error);
+  }
 );
 
-planeMesh2.rotateX(-Math.PI / 2);
-planeMesh2.name = "ground";
-//planeMesh2.position.y = -3;
+gltfLoader.load(
+  luxury1,
+  (gltf) => {
+    // gltf.scene.scale.set(.01, .01, .01)
+    gltf.scene.position.set(3, 0, -7);
+    mixer2 = new THREE.AnimationMixer(gltf.scene);
 
-instantTrackerGroup.add(planeMesh2);
+    const angleInRadians = THREE.MathUtils.degToRad(-60);
 
-const grid = new THREE.GridHelper(20, 20);
-//grid.position.y = -3;
-instantTrackerGroup.add(grid);
+    // Rotate the model to the right by 45 degrees
+    gltf.scene.rotation.y = angleInRadians;
+
+    const animationAction2 = mixer2.clipAction((gltf as any).animations[0]);
+    pokemon2AttackAnimations.push(animationAction2);
+
+    mixers.push(mixer2);
+
+    //animationAction2.play();
+
+    console.log("luxury", gltf);
+
+    instantTrackerGroup.add(gltf.scene);
+
+    // //add an animation from another file
+    // gltfLoader.load(
+    //   "models/vanguard@samba.glb",
+    //   (gltf) => {
+    //     console.log("loaded samba");
+    //     const animationAction = mixer.clipAction((gltf as any).animations[0]);
+    //     animationActions.push(animationAction);
+    //     animationsFolder.add(animations, "samba");
+    //   },
+    //   (xhr) => {
+    //     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+    //   },
+    //   (error) => {
+    //     console.log(error);
+    //   }
+    // );
+    modelReady2 = true;
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  (error) => {
+    console.log(error);
+  }
+);
+
+// fbxLoader.load(
+//   pokemon2,
+//   (object) => {
+//     object.scale.set(1, 1, 1);
+//     mixer = new THREE.AnimationMixer(object);
+
+//     const animationAction = mixer.clipAction(
+//       (object as THREE.Object3D).animations[0]
+//     );
+//     pokemon1AttackAnimations.push(animationAction);
+//     animationsFolder.add(animations, "default");
+//     activeAction = pokemon1AttackAnimations[0];
+
+//     console.log(object, pokemon1AttackAnimations);
+
+//     instantTrackerGroup.add(object);
+
+//     // add an animation from another file
+//     fbxLoader.load(
+//       pokemon1,
+//       (object) => {
+//         console.log("loaded charizard attack");
+
+//         const animationAction = mixer.clipAction(
+//           (object as THREE.Object3D).animations[0]
+//         );
+//         pokemon1AttackAnimations.push(animationAction);
+//         animationsFolder.add(animations, "samba");
+//       },
+//       (xhr) => {
+//         console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+//       },
+//       (error) => {
+//         console.log(error);
+//       }
+//     );
+//   },
+//   (xhr) => {
+//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+//   },
+//   (error) => {
+//     console.log(error);
+//   }
+// );
+
+//------------------MODEL LOADING FINISHED---------------------
 
 document.addEventListener("DOMContentLoaded", () => {
   const countdownElement = document.getElementById("countdown");
@@ -287,18 +274,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Listen for animation end event and start the game when the countdown finishes
   countdownElement.addEventListener("animationend", startGame);
 });
-
-//highlight square
-
-// const hightSquare = new THREE.Mesh(
-//   new THREE.PlaneGeometry(1, 1),
-//   new THREE.MeshBasicMaterial({ side: THREE.DoubleSide })
-// );
-
-// hightSquare.rotateX(-Math.PI / 2);
-// hightSquare.position.set(0.5, 0, 0.5);
-
-// instantTrackerGroup.add(hightSquare);
 
 /**
  * Sizes
@@ -332,7 +307,7 @@ instantTrackerGroup.add(directionalLight);
 const ambientLight = new THREE.AmbientLight("white", 0.4);
 instantTrackerGroup.add(ambientLight);
 
-camera.position.set(0, 10, 2);
+camera.position.set(0, 10, 100);
 
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // const clock = new THREE.Clock();
@@ -354,6 +329,8 @@ const clock = new THREE.Clock();
 const stats = new Stats();
 document.body.appendChild(stats.dom);
 
+console.log(instantTrackerGroup);
+
 // Use a function to render our scene as usual
 function render(): void {
   if (!hasPlaced) {
@@ -373,7 +350,17 @@ function render(): void {
   // camera.position.y += 1;
   // console.log(camera.position);
   // Call render() again next frame
-  if (modelReady) mixer.update(clock.getDelta());
+  //console.log(modelReady, modelReady2);
+  let delta = clock.getDelta();
+  if (modelReady && modelReady2) {
+    for (let i = 0, l = mixers.length; i < l; i++) {
+      mixers[i].update(delta);
+      mixers[i]._actions[0].play();
+
+      console.log(i, mixers[i]);
+    }
+  }
+
   requestAnimationFrame(render);
 }
 
