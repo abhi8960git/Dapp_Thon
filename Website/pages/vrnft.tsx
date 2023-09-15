@@ -14,6 +14,7 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
+import Router, { useRouter } from "next/router";
 
 import Web3 from "web3";
 import Dropzonee from "@/components/Dropzone";
@@ -22,6 +23,7 @@ import {ethers} from 'ethers';
 import ABI from "../public/ABI.json";
 
 export default function App() {
+  const router = useRouter();
   const [accounts, setAccounts] = useState([]);
   const [file, setFile] = useState(null);
   const [name, setName] = useState("");
@@ -97,7 +99,7 @@ export default function App() {
 
   // Mint NFT part
 
-  const ContractAddress = "0x54bdf659cC2925f87729d2EA7C03d66db7d5934C";
+  const ContractAddress = "0x3886C79715E975B9EB5adB46f9Ee068DFFa5a7C5";
 
   let ethereum: any;
   if (typeof window !== "undefined") {
@@ -115,8 +117,14 @@ export default function App() {
       accounts?.[0] ? undefined : wallet?.address
     );
     const contract = new ethers.Contract(ContractAddress, ABI, signer);
-    const tx = await contract.awardItem(link);
-    await tx.wait();
+
+    if(link){
+      const tx = await contract.awardItem(link);
+      await tx.wait();
+    }else{
+      alert("Token URI is empty");
+    }
+    
   };
 
   // Mint NFT Function
@@ -149,6 +157,7 @@ export default function App() {
       setTimeout(async () => {
         try {
           const data = await axios.get("http://localhost:5000/api/upload/json");
+          console.log(data);
           setIpfsLink(data.data.url);
         } catch (error) {
           console.log("get error", error);
@@ -159,6 +168,11 @@ export default function App() {
       setTimeout(async()=>{
       mintNFT(ipfsLink);
       },4000)
+
+
+      // setTimeout(async()=>{
+      // router.push('/');
+      // },8000)
     } catch (error) {
       console.error(error);
     }
@@ -175,7 +189,7 @@ export default function App() {
       <div className="glassmorphism w-[90%] md:w-[70%] flex justify-center items-center py-[90px]">
         <div className="w-[600px] flex justify-center flex-col">
           <div className="flex flex-col items-center mx-7 gap-4">
-            {!ipfsLink && <Dropzonee setFile={setFile} />}
+            { <Dropzonee setFile={setFile} />}
 
             <div className="form-item glassmorphism w-full mt-4">
               <input

@@ -11,13 +11,20 @@ interface Text{
 
 
 const Card = (props:any) => {
-  const {text, image } = props;
+  var {text, image } = props;
   const router = useRouter();
   const handleClick = ()=>{
+
+
+    if(text = "Enter in AR"){
+      router.push('/vrnft')
+    }else{
+      router.push('./game');
+    }
     
   
   
-    router.push('/vrnft')
+    
   }
   return (
     <>

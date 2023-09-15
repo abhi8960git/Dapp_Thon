@@ -38,7 +38,6 @@ export default function Home() {
       setIs(true);
     }, 2000);
 
-    setTimeout(async () => {}, 2000);
   };
 
   // is wallet connect function
@@ -104,7 +103,7 @@ export default function Home() {
 
   // };
 
-  const ContractAddress = "0x54bdf659cC2925f87729d2EA7C03d66db7d5934C";
+  const ContractAddress = "0x3886C79715E975B9EB5adB46f9Ee068DFFa5a7C5";
 
   let ethereum: any;
   if (typeof window !== "undefined") {
@@ -124,9 +123,7 @@ export default function Home() {
     const contract = new ethers.Contract(ContractAddress, ABI, signer);
     console.log(contract);
     const tx = await contract.balanceOf(accounts[0]);
-
-    // await tx.wait();
-
+    await new Promise(resolve => setTimeout(resolve, 2000));
     setNfts(Number(tx));
   };
 
@@ -150,7 +147,7 @@ export default function Home() {
       >
         <div
           className={`col-span-3  lg:col-span-1 ${
-            account.length > 0 && nfts == 0 && !is
+            account.length > 0 && nfts == 0 
               ? ""
               : "blur-[2px] pointer-events-none"
           } mt-[-36px]  h-[700px] glassmorphism border-2 border-red-500 p-6 relative flex flex-col place-items-center before:absolute before:h-[300px] before:w-[700px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]`}
