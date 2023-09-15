@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,user-scalable=no,minimal-ui"
+    />
+    <title>Pokemon Fight</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css"
+    />
+    <script type="module" src="index.ts"></script>
+    <style>
+      .webgl {
+        position: relative;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      #countdown {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        font-size: 96px; /* Increase the font size for bigger text */
+        font-weight: bold;
+
+        font-family: "PokemonSolid", sans-serif;
+        color: #ff6600; /* Pokémon-style orange color */
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add a subtle text shadow */
+        transform: scale(
+          2
+        ); /* Increase the initial scale for a playful effect */
+        transition: opacity 0.5s, transform 0.5s, font-size 0.5s; /* Smooth transitions */
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas class="webgl"></canvas>
+
+    <!-- Countdown element -->
+    <div id="countdown" data-aos="zoom-in" data-aos-duration="1000">3</div>
+
+    <div id="tap-to-place">Tap to Place</div>
+
+    <!-- Include the AOS JavaScript file -->
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <!-- Initialize AOS -->
+    <script>
+      console.log(AOS);
+      AOS.init();
+    </script>
+  </body>
+</html>
