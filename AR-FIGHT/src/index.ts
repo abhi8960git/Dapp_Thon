@@ -16,8 +16,12 @@ let isPokeballRotating = false;
 
 // const model = new URL("../assets/pikachu2.glb", import.meta.url).href;
 const pokemon2 = new URL("../assets/fly1.glb", import.meta.url).href;
-const pokemon1 = new URL("../assets/FLY ACTTACK.fbx", import.meta.url).href;
+const pokemon1 = new URL("../assets/pokemon_home_urshifu.glb", import.meta.url)
+  .href;
 const luxury1 = new URL("../assets/LUXARY.glb", import.meta.url).href;
+const stadium = new URL("../assets/platform.glb", import.meta.url).href;
+
+let chari, lux;
 
 import "./index.css";
 import { formToJSON } from "axios";
@@ -58,9 +62,13 @@ document.addEventListener("DOMContentLoaded", () => {
         countdownElement.innerText = "1";
         setTimeout(() => {
           // Start your game logic or remove the countdown element
-          countdownElement.style.display = "none";
-          tapToPlaceElement.style.display = "block"; // Show the game instructions or elements
-        }, 1000); // Wait for 1 second for "1" to be displayed
+          countdownElement.innerText = "FIGHT";
+          setTimeout(() => {
+            // Start your game logic or remove the countdown element
+            countdownElement.style.display = "none";
+            tapToPlaceElement.style.display = "block"; // Show the game instructions or elements
+          }, 1000); // Wait for 1 second for "1" to be displayed
+        }, 1000);
       }, 1000); // Wait for 1 second for "2" to be displayed
     }, 2000); // Wait for 1 second for "3" to be displayed
   }
@@ -117,12 +125,20 @@ let pokemon1AttackAnimations: THREE.AnimationClip[] = []; // Array for Pokémon 
 let pokemon2AttackAnimations: THREE.AnimationClip[] = []; // Array for Pokémon 2 attack animations
 
 //------------------MODEL LOADING STARTED---------------------
+// Create health bar materials
+const healthBarMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const damageMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+
+// Create health bar geometries
+const healthBarGeometry = new THREE.BoxGeometry(2, 0.2, 0.2); // Adjust the size as needed
+const damageGeometry = new THREE.BoxGeometry(2, 0.2, 0.2); // Same size as health bar
 
 gltfLoader.load(
   pokemon2,
   (gltf) => {
+    chari = gltf.scene;
     //gltf.scene.scale.set(0.5, 0.5, 0.5);
-    gltf.scene.position.set(-3, 0, -7);
+    gltf.scene.position.set(-4, 1, -7);
     mixer = new THREE.AnimationMixer(gltf.scene);
 
     const angleInRadians = THREE.MathUtils.degToRad(60);
@@ -141,16 +157,20 @@ gltfLoader.load(
       object.frustumCulled = false;
     });
 
-    // // Create a directional light
-    // const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    // directionalLight.position.set(1, 1, 1); // Set the light's position
+    // Create health bars
+    const pokemon1HealthBar = new THREE.Mesh(
+      healthBarGeometry,
+      healthBarMaterial
+    );
 
-    // // Add the light to the scene
-    // gltf.scene.add(directionalLight);
+    // Position health bars above the models
+    pokemon1HealthBar.position.set(
+      chari.position.x,
+      chari.position.y + 2,
+      chari.position.z
+    );
 
-    // // You can also add an ambient light for overall illumination
-    // const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Color, Intensity
-    // gltf.scene.add(ambientLight);
+    instantTrackerGroup.add(pokemon1HealthBar);
 
     instantTrackerGroup.add(gltf.scene);
 
@@ -165,10 +185,11 @@ gltfLoader.load(
 );
 
 gltfLoader.load(
-  luxury1,
+  pokemon1,
   (gltf) => {
-    // gltf.scene.scale.set(.01, .01, .01)
-    gltf.scene.position.set(3, 0, -7);
+    lux = gltf.scene;
+    gltf.scene.scale.set(2, 2, 2);
+    gltf.scene.position.set(0.8, -1.3, -7);
     mixer2 = new THREE.AnimationMixer(gltf.scene);
 
     const angleInRadians = THREE.MathUtils.degToRad(-60);
@@ -184,6 +205,19 @@ gltfLoader.load(
     //animationAction2.play();
 
     console.log("luxury", gltf);
+
+    const luxuryHealthBar = new THREE.Mesh(
+      healthBarGeometry,
+      healthBarMaterial
+    );
+
+    luxuryHealthBar.position.set(
+      lux.position.x,
+      lux.position.y + 2,
+      lux.position.z
+    );
+
+    instantTrackerGroup.add(luxuryHealthBar);
 
     instantTrackerGroup.add(gltf.scene);
 
@@ -213,67 +247,37 @@ gltfLoader.load(
   }
 );
 
-// fbxLoader.load(
-//   pokemon2,
-//   (object) => {
-//     object.scale.set(1, 1, 1);
-//     mixer = new THREE.AnimationMixer(object);
+gltfLoader.load(
+  stadium,
+  (gltf) => {
+    gltf.scene.scale.set(0.5, 0.5, 0.5);
+    gltf.scene.position.set(0, -2, -5);
+    const angleInRadians = THREE.MathUtils.degToRad(-90);
 
-//     const animationAction = mixer.clipAction(
-//       (object as THREE.Object3D).animations[0]
-//     );
-//     pokemon1AttackAnimations.push(animationAction);
-//     animationsFolder.add(animations, "default");
-//     activeAction = pokemon1AttackAnimations[0];
+    // Rotate the model to the right by 45 degrees
+    gltf.scene.rotation.y = angleInRadians;
 
-//     console.log(object, pokemon1AttackAnimations);
+    console.log("stadium", gltf);
 
-//     instantTrackerGroup.add(object);
+    gltf.scene.traverse(function (object) {
+      object.frustumCulled = false;
+    });
 
-//     // add an animation from another file
-//     fbxLoader.load(
-//       pokemon1,
-//       (object) => {
-//         console.log("loaded charizard attack");
-
-//         const animationAction = mixer.clipAction(
-//           (object as THREE.Object3D).animations[0]
-//         );
-//         pokemon1AttackAnimations.push(animationAction);
-//         animationsFolder.add(animations, "samba");
-//       },
-//       (xhr) => {
-//         console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-//       },
-//       (error) => {
-//         console.log(error);
-//       }
-//     );
-//   },
-//   (xhr) => {
-//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-//   },
-//   (error) => {
-//     console.log(error);
-//   }
-// );
+    instantTrackerGroup.add(gltf.scene);
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  (error) => {
+    console.log(error);
+  }
+);
 
 //------------------MODEL LOADING FINISHED---------------------
 
-document.addEventListener("DOMContentLoaded", () => {
-  const countdownElement = document.getElementById("countdown");
-  const tapToPlaceElement = document.getElementById("tap-to-place");
-
-  // Function to start the game after the countdown
-  function startGame() {
-    countdownElement.style.display = "none"; // Hide the countdown
-    tapToPlaceElement.style.display = "block"; // Show the game instructions or elements
-    // Add your game initialization logic here
-  }
-
-  // Listen for animation end event and start the game when the countdown finishes
-  countdownElement.addEventListener("animationend", startGame);
-});
+// Set initial health values
+let pokemon1Health = 100;
+let luxuryHealth = 100;
 
 /**
  * Sizes
