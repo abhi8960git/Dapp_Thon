@@ -15,10 +15,8 @@ import { GUI } from "dat.gui";
 let isPokeballRotating = false;
 
 const model = new URL("../assets/pikachu2.glb", import.meta.url).href;
-const fbxModel = new URL("../assets/thrill.fbx", import.meta.url).href;
-const pokemon1 = new URL("../assets/peakpx-3.jpg", import.meta.url).href;
-const pokemon2 = new URL("../assets/peakpx-2.jpg", import.meta.url).href;
-const pokemon3 = new URL("../assets/peakpx-2.jpg", import.meta.url).href;
+const pokemon1 = new URL("../assets/peakpx-2.jpg", import.meta.url).href;
+const pokemon2 = new URL("../assets/chari.png", import.meta.url).href;
 
 const pokeball = new URL(
   "../assets/pokemon_basic_pokeball.glb",
@@ -217,7 +215,7 @@ gltfLoader.load(
 //------------------MODEL LOADING FINISHED---------------------
 
 const planeWidth = 1.5; // The width of the plane in your scene
-const planeHeight = (2796 / 1290) * planeWidth; // Calculate the height to maintain the image aspect ratio
+const planeHeight = (2560 / 1920) * planeWidth; // Calculate the height to maintain the image aspect ratio
 
 const planeGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight, 1, 1);
 // Load the pre-saved image texture
