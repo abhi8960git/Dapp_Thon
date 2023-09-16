@@ -333,6 +333,20 @@ gltfLoader.load(
 let pokemon1Health = 100;
 let luxuryHealth = 100;
 
+// Function to show the defeat message for Pokémon 1
+function showPokemon1DefeatMessage() {
+  console.log("here1111");
+  const defeatMessage = document.getElementById("defeatMessage");
+  defeatMessage.style.display = "block";
+}
+
+// Function to show the win message for Luxury
+function showLuxuryWinMessage() {
+  console.log("here1111");
+  const winMessage = document.getElementById("winMessage");
+  winMessage.style.display = "block";
+}
+
 // Function to update health bars
 function updateHealthBars() {
   const scaleFactor = 0.02; // Adjust the scale factor as needed
@@ -366,17 +380,24 @@ function handleAttack(targetModel) {
 
 // Example of reducing health (you can update this logic based on your game)
 function reduceHealth(model) {
+  const minDamage = 5; // Minimum damage to be dealt
+  const maxDamage = 30; // Maximum damage to be dealt
+  const randomDamage =
+    Math.floor(Math.random() * (maxDamage - minDamage + 1)) + minDamage;
+
   if (model === "pokemon1") {
-    pokemon1Health -= 10; // Reduce health by 10
+    pokemon1Health -= randomDamage; // Reduce health by random damage
     if (pokemon1Health <= 0) {
       // Pokemon 1 is defeated
-      console.log("Pokemon 1 is defeated!");
+      document.getElementById("defeatMessage").style.display = "block";
+      document.getElementById("luxuryAttackButton").disabled = true; // Disable Luxury's attack button
     }
   } else if (model === "luxury") {
-    luxuryHealth -= 10; // Reduce health by 10
+    luxuryHealth -= randomDamage; // Reduce health by random damage
     if (luxuryHealth <= 0) {
       // Luxury is defeated
-      console.log("Luxury is defeated!");
+      document.getElementById("winMessage").style.display = "block";
+      document.getElementById("pokemon1AttackButton").disabled = true; // Disable Pokemon 1's attack button
     }
   }
 
