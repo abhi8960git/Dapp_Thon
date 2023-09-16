@@ -20,8 +20,10 @@ const pokemon1 = new URL("../assets/pokemon_home_urshifu.glb", import.meta.url)
   .href;
 const luxury1 = new URL("../assets/LUXARY.glb", import.meta.url).href;
 const stadium = new URL("../assets/platform.glb", import.meta.url).href;
+const fight = new URL("../assets/fire.glb", import.meta.url).href;
+const damage = new URL("../assets/damage.glb", import.meta.url).href;
 
-let chari, lux;
+let chari, lux, luxuryHealthBar, pokemon1HealthBar;
 
 import "./index.css";
 import { formToJSON } from "axios";
@@ -158,10 +160,7 @@ gltfLoader.load(
     });
 
     // Create health bars
-    const pokemon1HealthBar = new THREE.Mesh(
-      healthBarGeometry,
-      healthBarMaterial
-    );
+    pokemon1HealthBar = new THREE.Mesh(healthBarGeometry, healthBarMaterial);
 
     // Position health bars above the models
     pokemon1HealthBar.position.set(
@@ -171,6 +170,60 @@ gltfLoader.load(
     );
 
     instantTrackerGroup.add(pokemon1HealthBar);
+
+    //add an animation from another file
+    gltfLoader.load(
+      fight,
+      (gltf) => {
+        console.log("fire");
+        const animationActions1 = mixer.clipAction((gltf as any).animations[0]);
+        const animationActions2 = mixer.clipAction((gltf as any).animations[1]);
+        const animationActions3 = mixer.clipAction((gltf as any).animations[2]);
+        const animationActions4 = mixer.clipAction((gltf as any).animations[3]);
+        const animationActions5 = mixer.clipAction((gltf as any).animations[4]);
+        const animationActions6 = mixer.clipAction((gltf as any).animations[5]);
+        const animationActions7 = mixer.clipAction((gltf as any).animations[6]);
+
+        // Create an array to hold the animation actions you want to combine
+        const actionsToCombine = [
+          animationActions1,
+          animationActions2,
+          animationActions3,
+          animationActions4,
+          animationActions5,
+          animationActions6,
+          animationActions7,
+        ];
+
+        // Play the combined animation action
+
+        pokemon1AttackAnimations.push(...actionsToCombine);
+
+        //add an animation from another file
+        gltfLoader.load(
+          damage,
+          (gltf) => {
+            console.log("damage");
+            const animationAction = mixer.clipAction(
+              (gltf as any).animations[0]
+            );
+            pokemon1AttackAnimations.push(animationAction);
+          },
+          (xhr) => {
+            console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+      },
+      (xhr) => {
+        console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
 
     instantTrackerGroup.add(gltf.scene);
 
@@ -198,7 +251,11 @@ gltfLoader.load(
     gltf.scene.rotation.y = angleInRadians;
 
     const animationAction2 = mixer2.clipAction((gltf as any).animations[0]);
+    const animationAction3 = mixer2.clipAction((gltf as any).animations[2]);
+    const animationAction4 = mixer2.clipAction((gltf as any).animations[3]);
     pokemon2AttackAnimations.push(animationAction2);
+    pokemon2AttackAnimations.push(animationAction3);
+    pokemon2AttackAnimations.push(animationAction4);
 
     mixers.push(mixer2);
 
@@ -206,10 +263,7 @@ gltfLoader.load(
 
     console.log("luxury", gltf);
 
-    const luxuryHealthBar = new THREE.Mesh(
-      healthBarGeometry,
-      healthBarMaterial
-    );
+    luxuryHealthBar = new THREE.Mesh(healthBarGeometry, healthBarMaterial);
 
     luxuryHealthBar.position.set(
       lux.position.x,
@@ -279,6 +333,73 @@ gltfLoader.load(
 let pokemon1Health = 100;
 let luxuryHealth = 100;
 
+// Function to update health bars
+function updateHealthBars() {
+  const scaleFactor = 0.02; // Adjust the scale factor as needed
+
+  // Update health bar scales based on health
+  const pokemon1Scale = new THREE.Vector3(pokemon1Health * scaleFactor, 1, 1);
+  const luxuryScale = new THREE.Vector3(luxuryHealth * scaleFactor, 1, 1);
+
+  pokemon1HealthBar.scale.copy(pokemon1Scale);
+  luxuryHealthBar.scale.copy(luxuryScale);
+
+  // Change health bar material to red when health is low
+  if (pokemon1Health < 50) {
+    pokemon1HealthBar.material = damageMaterial;
+  } else {
+    pokemon1HealthBar.material = healthBarMaterial;
+  }
+
+  if (luxuryHealth < 50) {
+    luxuryHealthBar.material = damageMaterial;
+  } else {
+    luxuryHealthBar.material = healthBarMaterial;
+  }
+}
+
+function handleAttack(targetModel) {
+  // Implement your attack logic here
+  // For example, you can reduce the health of the target model
+  reduceHealth(targetModel);
+}
+
+// Example of reducing health (you can update this logic based on your game)
+function reduceHealth(model) {
+  if (model === "pokemon1") {
+    pokemon1Health -= 10; // Reduce health by 10
+    if (pokemon1Health <= 0) {
+      // Pokemon 1 is defeated
+      console.log("Pokemon 1 is defeated!");
+    }
+  } else if (model === "luxury") {
+    luxuryHealth -= 10; // Reduce health by 10
+    if (luxuryHealth <= 0) {
+      // Luxury is defeated
+      console.log("Luxury is defeated!");
+    }
+  }
+
+  // Update health bars
+  updateHealthBars();
+}
+
+// Add event listeners to attack buttons
+const pokemon1AttackButton = document.querySelector("#pokemon1AttackButton");
+const luxuryAttackButton = document.querySelector("#luxuryAttackButton");
+
+pokemon1AttackButton.addEventListener("click", () => {
+  // Call the handleAttack function with the target model
+  console.log("here");
+  handleAttack("pokemon1");
+});
+
+luxuryAttackButton.addEventListener("click", () => {
+  // Call the handleAttack function with the target model
+  console.log("here");
+  handleAttack("luxury");
+});
+
 /**
  * Sizes
  */
@@ -335,6 +456,8 @@ document.body.appendChild(stats.dom);
 
 console.log(instantTrackerGroup);
 
+console.log(pokemon1AttackAnimations, pokemon2AttackAnimations);
+
 // Use a function to render our scene as usual
 function render(): void {
   if (!hasPlaced) {
@@ -360,8 +483,6 @@ function render(): void {
     for (let i = 0, l = mixers.length; i < l; i++) {
       mixers[i].update(delta);
       mixers[i]._actions[0].play();
-
-      console.log(i, mixers[i]);
     }
   }
 
