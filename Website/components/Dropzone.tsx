@@ -55,8 +55,12 @@ const Dropzonee: FunctionComponent<{ setFile: Dispatch<any> }> = ({ setFile }) =
   const { getRootProps, getInputProps, isDragReject } = useDropzone({
     onDrop,
     multiple: false,
-    accept: '.jpg, .png',
-  });
+    accept: {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+    },
+  })
+  
 
   return (
     <div className="h-[200px] w-full glassmorphism flex justify-center items-center">

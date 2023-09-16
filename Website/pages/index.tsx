@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { Inter } from "next/font/google";
@@ -143,14 +144,14 @@ export default function Home() {
       </div>
 
       <div
-        className={`grid grid-cols-3   w-full justify-center lg:ml-[20%]  items-center lg:gap-[50px] mt-7 gap-[50px]`}
+        className={` flex flex-col  lg:flex-row gap-4 w-[95%] md:w-[80%]`}
       >
         <div
-          className={`col-span-3  lg:col-span-1 ${
+          className={` ${
             account.length > 0 && nfts == 0 
               ? ""
               : "blur-[2px] pointer-events-none"
-          } mt-[-36px]  h-[700px] glassmorphism border-2 border-red-500 p-6 relative flex flex-col place-items-center before:absolute before:h-[300px] before:w-[700px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]`}
+          } lg:w-[40%] glassmorphism border-2 border-red-500 p-6 relative flex flex-col place-items-center before:absolute before:h-[300px] before:w-[700px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]`}
         >
           <p className="font text-sm md:text-xl tracking-[7px] text-white mt-3 mb-0">
             Customize NFT with AR{" "}
@@ -158,12 +159,14 @@ export default function Home() {
           <Card text={"Enter in AR"} image={pokemon} />
         </div>
 
+
+
         <div
-          className={`col-span-3 lg:col-span-2 ${
+          className={` ${
             account.length > 0 && nfts != 0 && is
               ? ""
               : "blur-[2px] pointer-events-none"
-          } mt-[-36px] w-[875px] h-[400px] md:h-[700px] glassmorphism border-2 border-red-500 p-6 relative flex flex-col place-items-center before:absolute before:h-[300px] before:w-[700px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]`}
+          } lg:w-[60%]  glassmorphism border-2 border-red-500 p-6 relative flex flex-col place-items-center before:absolute before:h-[300px] before:w-[700px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]`}
         >
           <p className="font text-sm md:text-xl tracking-[7px] text-white  ">
             Enter in Pokemon Game{" "}

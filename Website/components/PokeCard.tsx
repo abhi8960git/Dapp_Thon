@@ -40,7 +40,7 @@ const PokeCard = () => {
       <div className="h-[2px] w-full bg-white my-3"></div>
      <Image src={nft} alt="nft_card_Image"></Image>
       <div className="h-[2px] w-full bg-white my-3 font tracking-[3px] "></div>
-   <p className='text-sm'>0xE2e6F76502..27A62D461c9063E1D09</p>
+   <p className='text-sm'>0xE2e6..63E1D09</p>
 
    <div className='glassmorphism p-3 px-6 mt-3 text-md  shadow-lg hover:animate-pulse'>
     <button className='tracking-[3px]' onClick={MintNFT}>Get NFT</button>

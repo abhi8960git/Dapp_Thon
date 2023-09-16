@@ -5,7 +5,7 @@ import { TypeAnimation } from "react-type-animation";
 const Loader = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-black">
-      <div className="w-[500px] h-[500px] glassmorphism flex flex-col justify-center items-center  ">
+      <div className="lg:w-[50%] w-[80%] h-[400px] md:h-[500px] glassmorphism flex flex-col justify-center items-center  ">
         <Image src={loader} alt="loader"></Image>
         <TypeAnimation
         className="text-yellow-200 text-4xl font tracking-[5px] "

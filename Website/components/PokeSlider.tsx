@@ -23,11 +23,11 @@ const PokeSlider = () => {
         effect={'cards'}
         grabCursor={true}
         modules={[EffectCards]}
-        className="mySwiper"
+        className="mySwiper "
       >
-        <SwiperSlide><PokeCard/></SwiperSlide>
-        <SwiperSlide><PokeCard/></SwiperSlide>
-        <SwiperSlide><PokeCard/></SwiperSlide>
+        <SwiperSlide className='w-[70%]'><PokeCard/></SwiperSlide>
+        {/* <SwiperSlide className='w-[70%]'><PokeCard/></SwiperSlide> */}
+        {/* <SwiperSlide className='w-[70%]'><PokeCard/></SwiperSlide> */}
       
      
       </Swiper>

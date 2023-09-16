@@ -28,6 +28,7 @@ export default function App() {
   const [file, setFile] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   console.log("in_file_vrnft", file, name, description);
   const [ipfsLink, setIpfsLink] = useState(null);
@@ -65,27 +66,7 @@ export default function App() {
 
   // dropzone handle submit function
 
-  const handleSubmit = async () => {
-    if (uploadState === "Uploading") return;
-    setUploadState("Uploading");
-    const formData = new FormData();
-    formData.append("myFile", file);
-    try {
-      const { data } = await axios({
-        method: "post",
-        data: formData,
-        url: "api/upload",
-        headers: {
-          "Content-Type": "mutipart/form-data",
-        },
-      });
-      setIpfsLink(data.ipfsLink);
-      //  setId(data.id);
-    } catch (error: any) {
-      console.log(error.response.data);
-      setUploadState("Upload Failed");
-    }
-  };
+
 
   // Function to handle changes in the Name input field
   const handleNameChange = (event: any) => {
@@ -130,52 +111,40 @@ export default function App() {
   // Mint NFT Function
   const MintNFT = async () => {
     if (!name || !description) {
-      alert("Data is empty");
+      alert('Data is empty');
       return;
     }
 
-    try {
-      const jsonData = {
-        image: file,
-        name: name,
-        description: description,
-      };
+    setLoading(true); // Set loading to true before making the API calls
 
-      const response = await axios.post(
-        "http://localhost:5000/upload/json",
-        jsonData,
-        {
+    setTimeout(async () => {
+      try {
+        const jsonData = {
+          image: file,
+          name: name,
+          description: description,
+        };
+
+        const response = await axios.post('http://localhost:5000/upload/json', jsonData, {
           headers: {
-            "Content-Type": "application/json", // Set the content type to JSON
+            'Content-Type': 'application/json',
           },
-        }
-      );
+        });
 
-      console.log(response);
+        console.log(response);
 
-      // Introduce a 2-second delay before making the GET request
-      setTimeout(async () => {
-        try {
-          const data = await axios.get("http://localhost:5000/api/upload/json");
-          console.log(data);
-          setIpfsLink(data.data.url);
-        } catch (error) {
-          console.log("get error", error);
-        }
-      }, 2000); // 2000 milliseconds = 2 seconds
+        const data = await axios.get('http://localhost:5000/api/upload/json');
+        console.log(data);
+        setIpfsLink(data.data.url);
 
+        mintNFT(ipfsLink);
 
-      setTimeout(async()=>{
-      mintNFT(ipfsLink);
-      },4000)
-
-
-      // setTimeout(async()=>{
-      // router.push('/');
-      // },8000)
-    } catch (error) {
-      console.error(error);
-    }
+        setLoading(false); // Set loading to false after the API calls are complete
+      } catch (error) {
+        console.error(error);
+        setLoading(false); // Set loading to false if there's an error
+      }
+    }, 1000); // Introduce a 1-second delay before making the API calls
   };
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
