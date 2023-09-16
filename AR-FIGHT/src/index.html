@@ -37,6 +37,31 @@
         ); /* Increase the initial scale for a playful effect */
         transition: opacity 0.5s, transform 0.5s, font-size 0.5s; /* Smooth transitions */
       }
+      .message {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 48px;
+        font-weight: bold;
+        color: red; /* Adjust the color as needed */
+        display: none;
+        z-index: 9999; /* Place the message above other elements */
+        user-select: none; /* Disable text selection */
+        background-color: rgba(
+          255,
+          255,
+          255,
+          0.8
+        ); /* Add a semi-transparent background */
+        padding: 20px; /* Add some padding for better visibility */
+        border-radius: 10px; /* Add rounded corners for the message */
+        text-align: center; /* Center-align the text */
+      }
+
+      #winMessage {
+        color: green; /* Adjust the color as needed */
+      }
     </style>
   </head>
 
@@ -54,6 +79,9 @@
         Attack Luxury
       </button>
     </div>
+
+    <div id="defeatMessage" class="message" style="display: none">Defeat</div>
+    <div id="winMessage" class="message" style="display: none">Win</div>
 
     <div id="tap-to-place">Tap to Place</div>
 
