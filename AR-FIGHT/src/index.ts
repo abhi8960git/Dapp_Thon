@@ -43,11 +43,6 @@ const manager = new ZapparThree.LoadingManager();
 
 // ==================== Selectings dom elemets ====================
 const canvas = document.querySelector("canvas.webgl");
-const button_six = document.querySelector(".six");
-const forwardButton = document.querySelector(".forward");
-const jumpButton = document.querySelector(".jump");
-const buttonOne = document.getElementById("button1");
-const buttonTwo = document.getElementById("button2");
 
 // index.ts
 document.addEventListener("DOMContentLoaded", () => {
@@ -150,6 +145,7 @@ gltfLoader.load(
 
     const animationAction = mixer.clipAction((gltf as any).animations[0]);
     pokemon1AttackAnimations.push(animationAction);
+    animationAction.play();
 
     mixers.push(mixer);
 
@@ -256,6 +252,8 @@ gltfLoader.load(
     pokemon2AttackAnimations.push(animationAction2);
     pokemon2AttackAnimations.push(animationAction3);
     pokemon2AttackAnimations.push(animationAction4);
+
+    animationAction2.play();
 
     mixers.push(mixer2);
 
@@ -412,7 +410,22 @@ const luxuryAttackButton = document.querySelector("#luxuryAttackButton");
 pokemon1AttackButton.addEventListener("click", () => {
   // Call the handleAttack function with the target model
   console.log("here");
-  handleAttack("pokemon1");
+  pokemon2AttackAnimations[0].stop();
+
+  pokemon2AttackAnimations[0].fadeOut(1);
+  pokemon2AttackAnimations[0].stop();
+  pokemon2AttackAnimations[0].fadeOut(1);
+
+  // Play the first animation
+  pokemon2AttackAnimations[1].play();
+
+  // Set a timeout to start the next animation after a certain duration
+  setTimeout(() => {
+    pokemon2AttackAnimations[0].fadeIn(1);
+    pokemon2AttackAnimations[0].play();
+    pokemon2AttackAnimations[2].play();
+    handleAttack("pokemon1");
+  }, 2000); // Adjust the duration (in milliseconds) as needed
 });
 
 luxuryAttackButton.addEventListener("click", () => {
@@ -503,7 +516,6 @@ function render(): void {
   if (modelReady && modelReady2) {
     for (let i = 0, l = mixers.length; i < l; i++) {
       mixers[i].update(delta);
-      mixers[i]._actions[0].play();
     }
   }
 
