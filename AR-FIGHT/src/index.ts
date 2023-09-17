@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }, 1000); // Wait for 1 second for "1" to be displayed
         }, 1000);
       }, 1000); // Wait for 1 second for "2" to be displayed
-    }, 2000); // Wait for 1 second for "3" to be displayed
+    }, 15000); // Wait for 1 second for "3" to be displayed
   }
 
   // Trigger the countdown animation
