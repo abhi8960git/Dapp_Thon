@@ -125,7 +125,7 @@ export default function App() {
           description: description,
         };
 
-        const response = await axios.post('http://localhost:5000/upload/json', jsonData, {
+        const response = await axios.post('https://abhishek3.onrender.com/upload/json', jsonData, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -133,7 +133,7 @@ export default function App() {
 
         console.log(response);
 
-        const data = await axios.get('http://localhost:5000/api/upload/json');
+        const data = await axios.get('https://abhishek3.onrender.com/upload/json');
         console.log(data);
         setIpfsLink(data.data.url);
 
