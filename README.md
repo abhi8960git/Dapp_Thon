@@ -67,9 +67,7 @@ In PokeVerse, we've harnessed the power of **SPHERON STORAGE SDK** in our Node.j
 
 - 🛡️ **Reduced Client Complexity**: By handling IPFS interactions on the server side, we simplify the client-side code, reducing complexity and the risk of client-side errors. This simplification enhances the overall stability and maintainability of the game.
 
-- ⚡ **Better Performance**: Server
-
--side interactions leverage the more powerful server resources, offering faster network connections and better performance compared to individual client devices. This leads to quicker asset uploads and retrievals, ensuring a seamless gaming experience.
+- ⚡ **Better Performance**: Server-side interactions leverage the more powerful server resources, offering faster network connections and better performance compared to individual client devices. This leads to quicker asset uploads and retrievals, ensuring a seamless gaming experience.
 
 ## Tech Stack Used 🛠️
 
