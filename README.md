@@ -22,7 +22,7 @@ The **PokeVerse Game** is an exciting **AR** (Augmented Reality) and **Blockchai
 **Step 3: Accessing the Game**
 
 - 🌐 With the minted NFT in hand, the user gains access to the "Enter in Game" route.
-- 🚪 This route allows them to step into the AR world of Pokémon battles, where they'll encounter other players and creatures and here firstly user have to move around tha game and when he will find a pokemon Character NFT , user get directed to game battles.
+- 🚪 This route allows them to step into the AR world of Pokémon battles, where they'll encounter other players and creatures and here firstly user have to move around tha game and when he will find a pokemon Character , user get directed to game battles.
 
 **Step 4: Minting Character NFT**
 
