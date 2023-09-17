@@ -23,7 +23,7 @@ const contractAddress = "0x54bdf659cC2925f87729d2EA7C03d66db7d5934C";
 dotenv.config();
 const client = new SpheronClient({ token: process.env.TOKEN });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // contract address'
 
