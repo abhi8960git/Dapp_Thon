@@ -23,7 +23,7 @@ const stadium = new URL("../assets/platform.glb", import.meta.url).href;
 const fight = new URL("../assets/fire.glb", import.meta.url).href;
 const damage = new URL("../assets/damage.glb", import.meta.url).href;
 
-let chari, lux, luxuryHealthBar, pokemon1HealthBar;
+let chari, lux, luxuryHealthBar, pokemon1HealthBar, mixer, mixer2;
 
 import "./index.css";
 import { formToJSON } from "axios";
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }, 1000); // Wait for 1 second for "1" to be displayed
         }, 1000);
       }, 1000); // Wait for 1 second for "2" to be displayed
-    }, 2000); // Wait for 1 second for "3" to be displayed
+    }, 15000); // Wait for 1 second for "3" to be displayed
   }
 
   // Trigger the countdown animation
