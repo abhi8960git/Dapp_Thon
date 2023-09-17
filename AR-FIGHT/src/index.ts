@@ -23,7 +23,7 @@ const stadium = new URL("../assets/platform.glb", import.meta.url).href;
 const fight = new URL("../assets/fire.glb", import.meta.url).href;
 const damage = new URL("../assets/damage.glb", import.meta.url).href;
 
-let chari, lux, luxuryHealthBar, pokemon1HealthBar;
+let chari, lux, luxuryHealthBar, pokemon1HealthBar, mixer, mixer2;
 
 import "./index.css";
 import { formToJSON } from "axios";
