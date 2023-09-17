@@ -107,19 +107,18 @@ In PokeVerse, we've harnessed the power of **SPHERON STORAGE SDK** in our Node.j
 ## Future Plans 🚧
 
 1. **Comprehensive NFT Marketplace**:
-    - Develop a robust NFT marketplace within PokeVerse, allowing players to buy, sell, and trade a wide variety of in-game assets, including characters and unique game items.
+   - 🌐 We will develop a robust NFT marketplace within PokeVerse, allowing players to buy, sell, and trade a wide variety of in-game assets, including characters and unique game items.
 
 2. **Stakeholder System**:
-    - Introduce a stakeholder system where players can actively participate in shaping the game. Stakeholders will have the opportunity to propose and vote on new character attacks through a decentralized autonomous organization (DAO) mechanism.
+   - 🤝 We will introduce a stakeholder system where players can actively participate in shaping the game. Stakeholders will have the opportunity to propose and vote on new character attacks through a decentralized autonomous organization (DAO) mechanism.
 
 3. **Spheron Storage SDK Integration**:
-    - Continue leveraging the power of the SPHERON STORAGE SDK to efficiently manage and store all the metadata associated with game assets, making them easily accessible and secure.
+   - 📦 We will continue leveraging the power of the SPHERON STORAGE SDK to efficiently manage and store all the metadata associated with game assets, making them easily accessible and secure.
 
 4. **Automated Market Makers (AMMs)**:
-    - Implement Automated Market Makers (AMMs) within the marketplace. AMMs will enable players to trade NFTs, particularly those acquired as rewards from winning battles in PokeVerse. This feature will provide liquidity and a dynamic trading experience for our users.
-  
-5.**Real-Time Multiplayer Battles**:
+   - 🔄 We will implement Automated Market Makers (AMMs) within the marketplace. AMMs will enable players to trade NFTs, particularly those acquired as rewards from winning battles in PokeVerse. This feature will provide liquidity and a dynamic trading experience for our users.
 
-    - We plan to implement real-time multiplayer battles in the future, allowing players to challenge each other to exciting Pokémon battles in our augmented reality world. To achieve this, we will utilize cutting-edge technologies like WebSocket or WebRTC to facilitate real-time communication between players' devices. Ensuring low latency will be a top priority, providing a seamless and highly responsive multiplayer gaming experience for our players.
+5. **Real-Time Multiplayer Battles**:
+   - 🎮 We will plan to implement real-time multiplayer battles in the future, allowing players to challenge each other to exciting Pokémon battles in our augmented reality world. To achieve this, we will utilize cutting-edge technologies like WebSocket or WebRTC to facilitate real-time communication between players' devices. Ensuring low latency will be a top priority, providing a seamless and highly responsive multiplayer gaming experience for our players.
 
 # Stay tuned for an exciting PokeVerse journey! 🌟🎮
