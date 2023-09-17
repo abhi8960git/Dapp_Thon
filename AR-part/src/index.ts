@@ -358,6 +358,8 @@ button_six.addEventListener("click", () => {
   // Reset the camera and visibility of the planeMesh
   camera.position.copy(originalCameraPosition);
   camera.lookAt(0, 0, 0);
+  window.location.href =
+    "https://bafybeies74oqyj6ketctykc2sjkagndnpdodunee4kg4asyc3jv7obvlyu.ipfs.sphn.link/vrnft/";
 });
 
 /**
