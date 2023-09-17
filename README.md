@@ -119,6 +119,7 @@ In PokeVerse, we've harnessed the power of **SPHERON STORAGE SDK** in our Node.j
     - Implement Automated Market Makers (AMMs) within the marketplace. AMMs will enable players to trade NFTs, particularly those acquired as rewards from winning battles in PokeVerse. This feature will provide liquidity and a dynamic trading experience for our users.
   
 5.**Real-Time Multiplayer Battles**:
+
     - We plan to implement real-time multiplayer battles in the future, allowing players to challenge each other to exciting Pokémon battles in our augmented reality world. To achieve this, we will utilize cutting-edge technologies like WebSocket or WebRTC to facilitate real-time communication between players' devices. Ensuring low latency will be a top priority, providing a seamless and highly responsive multiplayer gaming experience for our players.
 
 # Stay tuned for an exciting PokeVerse journey! 🌟🎮
