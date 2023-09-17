@@ -133,7 +133,7 @@ export default function App() {
 
         console.log(response);
 
-        const data = await axios.get('https://abhishek3.onrender.com/upload/json');
+        const data = await axios.get('https://abhishek3.onrender.com/api/upload/json');
         console.log(data);
         setIpfsLink(data.data.url);
 

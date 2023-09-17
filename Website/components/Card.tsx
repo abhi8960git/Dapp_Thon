@@ -18,7 +18,8 @@ const Card = (props: any) => {
     setLoading(true);
     setTimeout(() => {
       if (text === "Enter in AR") {
-        router.push("/vrnft");
+        // router.push("/vrnft");
+        window.location.href= 'https://dapp-thon-seven.vercel.app'
       } else {
         router.push("./game");
       }

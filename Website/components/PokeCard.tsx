@@ -27,7 +27,9 @@ const PokeCard = () => {
     );
     const contract = new ethers.Contract(ContractAddress, ABI, signer);
     const tx = await contract.awardItem();
-    await tx.wait();
+
+    window.location.href= 'https://dapp-thon-ta9c.vercel.app/'
+    await tx.wait()
 
   }
 
