@@ -18,6 +18,9 @@ The **PokeVerse Game** is an exciting **AR** (Augmented Reality) and **Blockchai
 - 🖌️ If a user doesn't already possess the necessary NFTs, they can mint their own AR-powered NFT.
 - 🎨 During the minting process, users customize the appearance of their NFT, creating a unique in-game avatar.
 - 💎 After customization, the NFT is minted, which means it's created on the blockchain and becomes their virtual identity within the game.
+- Our IPFS hosted IPFS url through SPHERON STORAGE SDK  will look like these:
+- IMAGE(vr customized image) : [link](https://bafybeictkh3eshh7365ivpilsbsx5xm47lvw7zvwv2ug6zvw6o3p6ax4qm.ipfs.sphn.link/nft.jpeg)
+- NFT METADATA (hosted on IPFS):[link](https://bafybeialvcz6yif6bmymbyiqrmrrsxhuk2euj5ehmdi4kvn6we57hrkpge.ipfs.sphn.link/data.json)
 
 **Step 3: Accessing the Game**
 
